@@ -8,105 +8,199 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width" initial-scale="1.0">
 		<title>Build your Portfolio!</title>
-		<style>
-			.container {
-				display: grid;
-  				grid-template-columns: repeat(2, 50%);
-  				grid-template-rows: repeat(2, 50%);
-  				height: 690px;
-  				width: 1000px;
-  				gap: 10px;
-  				grid-template-areas:
-    				"a b"
-    				"c d";
-    			margin: 0 auto;
-			}
-			
-			
-			.TL {
-  				grid-area: a;
-  				display: grid;
-  				grid-template-columns: repeat(5, 20%);
-  				grid-template-rows: repeat(5, 20%);
-  				height: 100%;
-  				width: 100%;
-  				gap: 1px;
-  				grid-template-areas:
-    				"a a d d d"
-    				"a a c b b"
-    				"a a c b b"
-    				"a a c b b"
-    				"a a c b b";
-			}
-			.TL .select   {grid-area: a; border: 1px solid black;}
-			.TL .selected {grid-area: b; border: 1px solid black;}
-			.TL .display  {grid-area: d; border: 1px solid black;}
-			.TL .button   {
-				grid-area: c;
-				
-				display: grid;
-				grid-template-columns: repeat(1, 100%);
-  				grid-template-rows: repeat(3, 33.1%);
-  				height: 100%;
-  				width: 100%;
-				gap: 1px;
-				grid-template-areas:
-					"a"
-					"b"
-					"c";
-				}
-			.TL .button .add    {grid-area: a; border: 1px solid black;}
-			.TL .button .remove {grid-area: b; border: 1px solid black;}
-			.TL .button .reset  {grid-area: c; border: 1px solid black;}
-			
-			
-			.TR {
-  				grid-area: b;
-			}
-			#table {
-				border: 1px solid black;
-				height: 92%;
-			}
-			.time {float: right;}
-			
-			.BL {
-  				grid-area: c;
-  				display: grid;
-  				grid-template-columns: repeat(5, 20%);
-  				grid-template-rows: repeat(3, 33.33%);
-  				height: 100%;
-  				width: 100%;
-  				gap: 1px;
-  				grid-template-areas:
-    				"a a a a a"
-    				"b b b b c"
-    				"b b b b c";
-			}
-			.BL .select   {grid-area: a; border: 1px solid black;}
-			.BL .selected {grid-area: b; border: 1px solid black;}
-			.BL .button   {grid-area: c; border: 1px solid black;}
-			
-			.BR {
-  				grid-area: d;
-  				border: 1px solid black;
-			}
-			
-			button {
-				height:  100%;
-				width:   100%;
-			}
-		</style>
+		<link rel="stylesheet" type='text/css' href='PortfolioBuilder.css'>
 	</head>
+	
 	<body>
 		<div class="container">
 		
 			<div id="stock" class="TL">
 				<div class="select" align="center">
-					<input type="text" placeholder="티커 또는 종목코드 검색"/>
+					<div class="type">		
+						<input type="text" placeholder="티커 또는 종목코드 검색"/>
+					</div>
 					<!-- 따로 확인 버튼 없이, 입력된 결과에 해당하는 내용만 박스에 남김. 만약 없으면 찾는 결과가 없다고 출력 -->
-					<!-- 체크박스 적용 -->
+					<!-- 데이터에 보유중인 종목 수 표시 -->
+					<div class="scroll">
+						<table>
+							<tr>
+								<td>
+									<input type="checkbox"/> AAPL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> GOOGL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> MSFT
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> AAPL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> GOOGL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> MSFT
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> AAPL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> GOOGL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> MSFT
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> AAPL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> GOOGL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> MSFT
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> AAPL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> GOOGL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> MSFT
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> AAPL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> GOOGL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> MSFT
+								</td>
+							</tr>
+						</table>
+					</div>
 				</div>
-				<div class="selected">종목 리스트(티커/코드)</div>
+				<!-- 선택한 종목 수 표시 -->
+				<div class="selected">
+					<div class="type">		
+						<input type="text" placeholder="티커 또는 종목코드 검색"/>
+					</div>
+					<div class="scroll">
+						<table>
+							<tr>
+								<td>
+									<input type="checkbox"/> AAPL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> GOOGL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> MSFT
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> AAPL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> GOOGL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> MSFT
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> AAPL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> GOOGL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> MSFT
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> AAPL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> GOOGL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> MSFT
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> AAPL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> GOOGL
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input type="checkbox"/> MSFT
+								</td>
+							</tr>
+						</table>
+					</div>				
+				</div>
 				<div class="display">
 					<h3>iShares 20+ Treasury Bond</h3>
 					<!-- div(class="select") 내의 종목명에 마우스 올리면 div(class="display")에 종목 풀네임 출력 -->
@@ -132,9 +226,67 @@
   				<span class="time">(X.XXXXsec.)</span>
   			</div>
   			<div id="method" class="BL">
-  				<div class="select">포트폴리오 구성 방법</div>
-  				<!-- 라디오버튼 적용 -->>
-  				<div class="selected">선택된 포트폴리오 설명</div>
+  				<div class="select">
+  					<div class="title">포트폴리오 구성방식 선택</div>
+  					<div class="scroll">
+  						<table>
+  							<tr>
+  								<td>
+  									<input type="radio"/>동일 가중평균
+  								<td>
+  								<td>
+  									<input type="radio"/>시가총액 가중평균
+  								<td>
+  							</tr>
+  							<tr>
+  								<td>
+  									<input type="radio"/>자체제작 방식
+  								<td>
+  								<td>
+  									<input type="radio"/>뭐시기 가중평균
+  								<td>
+  							</tr>
+  							<tr>
+  								<td>
+  									<input type="radio"/>동일 가중평균
+  								<td>
+  								<td>
+  									<input type="radio"/>시가총액 가중평균
+  								<td>
+  							</tr>
+  							<tr>
+  								<td>
+  									<input type="radio"/>자체제작 방식
+  								<td>
+  								<td>
+  									<input type="radio"/>뭐시기 가중평균
+  								<td>
+  							</tr>
+  							<tr>
+  								<td>
+  									<input type="radio"/>동일 가중평균
+  								<td>
+  								<td>
+  									<input type="radio"/>시가총액 가중평균
+  								<td>
+  							</tr>
+  							<tr>
+  								<td>
+  									<input type="radio"/>자체제작 방식
+  								<td>
+  								<td>
+  									<input type="radio"/>뭐시기 가중평균
+  								<td>
+  							</tr>
+  						</table>
+  					</div>
+  				</div>
+  				<!-- 라디오버튼 적용 -->
+  				<div class="selected">
+  					<div>동일 가중평균</div>
+  					<br/>
+  					<div>포트폴리오 내의 모든 종목에 대해 같은 비율로 투자하는 것을 의미함</div>
+  				</div>
   				<div class="button">
   					<button>실행</button>
   				</div>
