@@ -1,0 +1,166 @@
+@charset "UTF-8";
+
+/* 전체 ----------------------------------------------------------------- */
+	.container {
+		display: grid;
+ 		grid-template-columns: repeat(2, 50%);
+ 		grid-template-rows: repeat(2, 50%);
+ 		height: 828px;
+ 		width: 1200px;
+ 		gap: 10px;
+ 		grid-template-areas:
+   			"a b"
+   			"c d";
+   		margin: 0 auto;
+	}
+		
+	button {
+		height:  100%;
+		width:   100%;
+	}
+		
+	.scroll {
+		overflow-y: scroll;
+		font-size: 20px;
+	}
+/* 전체 ----------------------------------------------------------------- */
+	
+/* (Top-Left) 종목 선택, 포트폴리오 편입 -------------------------------------- */	
+	.TL {
+ 		grid-area: a;
+ 
+ 		display: grid;
+ 		grid-template-columns: repeat(5, 20%);
+ 		grid-template-rows: repeat(5, 20%);
+ 		height: 100%;
+ 		width: 100%;
+ 		gap: 1px;
+ 		grid-template-areas:
+   			"a a d d d"
+   			"a a c b b"
+   			"a a c b b"
+   			"a a c b b"
+   			"a a c b b";
+	}
+	.TL .select   {
+		grid-area: a;
+		border: 1px solid black;
+			
+		display: grid;
+ 		grid-template-columns: repeat(1, 100%);
+ 		grid-template-rows: repeat(10, 10%);
+ 		height: 100%;
+ 		width: 100%;
+ 		gap: 0;
+ 		grid-template-areas:
+   			"a"
+   			"b"
+   			"b"
+   			"b"
+   			"b"
+   			"b"
+   			"b"
+   			"b"
+   			"b"
+   			"b"
+	}
+	.TL .select .type   {grid-area: a;}
+	.TL .select .scroll {grid-area: b;}
+	
+	.TL .selected {
+		grid-area: b;
+		border: 1px solid black;
+			
+		display: grid;
+ 		grid-template-columns: repeat(1, 100%);
+ 		grid-template-rows: repeat(8, 12.5%);
+ 		height: 100%;
+ 		width: 100%;
+ 		gap: 0;
+ 		grid-template-areas:
+   			"a"
+   			"b"
+   			"b"
+   			"b"
+   			"b"
+   			"b"
+   			"b"
+   			"b"
+	}
+	.TL .selected .type   {grid-area: a;}
+	.TL .selected .scroll {grid-area: b;}
+		
+	.TL .display  {grid-area: d; border: 1px solid black;}
+	.TL .button   {
+		grid-area: c;
+			
+		display: grid;
+		grid-template-columns: repeat(1, 100%);
+ 		grid-template-rows: repeat(3, 33.1%);
+ 		height: 100%;
+ 		width: 100%;
+		gap: 1px;
+		grid-template-areas:
+			"a"
+			"b"
+			"c";
+		}
+	.TL .button #add    {grid-area: a; border: 1px solid black;}
+	.TL .button #remove {grid-area: b; border: 1px solid black;}
+	.TL .button #reset  {grid-area: c; border: 1px solid black;}
+/* (Top-Left) 종목 선택, 포트폴리오 편입 -------------------------------------- */	
+	
+/* (Top-Right) 선택된 종목에 대하여 표 생성 ------------------------------------ */		
+	.TR {
+ 			grid-area: b;
+	}
+	#table {
+		border: 1px solid black;
+		height: 92%;
+	}
+	.time {float: right;}
+/* (Top-Right) 선택된 종목에 대하여 표 생성 ------------------------------------ */
+	
+/* (Bottom-Left) 포트폴리오 구성 방법 선택 ------------------------------------- */	
+	.BL {
+ 		grid-area: c;
+ 		display: grid;
+ 		grid-template-columns: repeat(5, 20%);
+ 		grid-template-rows: repeat(3, 33.33%);
+ 		height: 100%;
+ 		width: 100%;
+ 		gap: 1px;
+ 		grid-template-areas:
+   		"a a a a a"
+   		"b b b b c"
+   		"b b b b c";
+	}
+	.BL .select   {
+		grid-area: a;
+		border: 1px solid black;
+			
+ 		display: grid;
+ 		grid-template-columns: repeat(2, 50%);
+ 		grid-template-rows: repeat(5, 20%);
+ 		height: 100%;
+ 		width: 100%;
+ 		gap: 0px;
+ 		grid-template-areas:
+   			"a a"
+   			"b b"
+   			"b b"
+   			"b b"
+   			"b b";
+	}
+	.BL .select .title {grid-area:a;}
+	.BL .select .scroll {grid-area:b;}
+	.BL .selected {grid-area: b; border: 1px solid black;}
+	.BL .button   {grid-area: c; border: 1px solid black;}
+/* (Bottom-Left) 포트폴리오 구성 방법 선택 ------------------------------------- */
+	
+/* (Bottom-Right) 포트폴리오 구성 비중 원차트 ----------------------------------- */
+	.BR {
+ 		grid-area: d;
+ 		border: 1px solid black;
+	}
+/* (Bottom-Right) 포트폴리오 구성 비중 원차트 ----------------------------------- */	

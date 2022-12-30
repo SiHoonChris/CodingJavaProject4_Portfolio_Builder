@@ -1,19 +1,38 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="AccessDB.DataServlet" %>
+<%
+DataServlet srv = new DataServlet(); 
+String listOfAssets = srv.ShowAll();
+%>
 
 <!DOCTYPE html>
 <!-- https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Box_Alignment_in_CSS_Grid_Layout -->
-
 <html>
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width" initial-scale="1.0">
 		<title>Build your Portfolio!</title>
 		<link rel="stylesheet" type='text/css' href='PortfolioBuilder.css'>
+		
+		<script> // 테스트용 - 수정 예정
+			function add_assets() { // 선택 종목 포트폴리오에 추가
+				document.getElementById("selected").innerHTML='<tr><td><input type="checkbox"/> AAPL</td></tr>';
+			}
+			
+			let asset = document.getElementById("eliminate");
+			asset.addEventListener("mouseover", assetMouseOver);
+			asset.addEventListener("mouseout", assetMouseOut);
+			function assetMouseOver(){ // 마우스를 올리면 종목 코드/티커에 마우스 올리면 풀네임 보여줌
+				document.getElementById("fullname").innerHTML="fullname";
+			}
+			function assetMouseOut(){ // 마우스가 나가면 기본 문자열 보여줌
+				document.getElementById("fullname").innerHTML="종목명 상세";
+			}	
+		</script>
 	</head>
 	
 	<body>
 		<div class="container">
-		
 			<div id="stock" class="TL">
 				<div class="select" align="center">
 					<div class="type">		
@@ -23,197 +42,33 @@
 					<!-- 데이터에 보유중인 종목 수 표시 -->
 					<div class="scroll">
 						<table>
-							<tr>
-								<td>
-									<input type="checkbox"/> AAPL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> GOOGL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> MSFT
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> AAPL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> GOOGL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> MSFT
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> AAPL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> GOOGL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> MSFT
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> AAPL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> GOOGL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> MSFT
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> AAPL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> GOOGL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> MSFT
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> AAPL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> GOOGL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> MSFT
-								</td>
-							</tr>
+							<%=listOfAssets %>
 						</table>
 					</div>
 				</div>
 				<!-- 선택한 종목 수 표시 -->
-				<div class="selected">
+				<div class="selected" align="center">
 					<div class="type">		
 						<input type="text" placeholder="티커 또는 종목코드 검색"/>
 					</div>
 					<div class="scroll">
-						<table>
-							<tr>
-								<td>
-									<input type="checkbox"/> AAPL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> GOOGL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> MSFT
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> AAPL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> GOOGL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> MSFT
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> AAPL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> GOOGL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> MSFT
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> AAPL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> GOOGL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> MSFT
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> AAPL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> GOOGL
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input type="checkbox"/> MSFT
-								</td>
-							</tr>
+						<table id="selected">
 						</table>
 					</div>				
 				</div>
 				<div class="display">
-					<h3>iShares 20+ Treasury Bond</h3>
+					<h3 id="fullname">종목명 상세</h3>
 					<!-- div(class="select") 내의 종목명에 마우스 올리면 div(class="display")에 종목 풀네임 출력 -->
 					<!-- Full-name이 길어서 칸 밖으로 나가면 애니메이션 효과 적용, 전광판처럼 우에서 좌로 이동 -->
 				</div>
 				<div class="button">
-					<div class="add">
-						<button>추가</button>
+					<div id="add">
+						<button type="button" onclick="add_assets()">추가</button>
 					</div>
-					<div class="remove">
-						<button>제거</button>
+					<div id="remove">
+						<button id="eliminate">제거</button>
 					</div>
-					<div class="reset">
+					<div id="reset">
 						<button>초기화</button>
 						<!-- 초기화 버튼 클릭 시 alert 창 띄우기 : 재확인 -->
 					</div>

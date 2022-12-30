@@ -16,6 +16,10 @@ public class DataDAO {
 	private PreparedStatement pstmt;
 	private ResultSet         rs;
 	
+	
+	// ----------------------------------------
+	// 0. DB와의 연결통로 생성
+	// ----------------------------------------
 	public DataDAO() {
 		try {
 			Context ctx = new InitialContext();
@@ -25,26 +29,26 @@ public class DataDAO {
 			e.printStackTrace();
 		}
 	} // END - public DataDAO()
-	
-	public List<DataDTO> ListEmAll() {
+
+	// ----------------------------------------
+	// 1. 선택 가능한 종목 전체 가져오기
+	// ----------------------------------------
+	public String ListEmAll() {
 		
-		List<DataDTO> listOfAssets = new ArrayList<DataDTO>();
-				
+		String list="";
+		
 		try {
 			conn = dataFactory.getConnection();
-			
-			String query = "SELECT * FROM assets ";
-			
+
+			String query = "SELECT name, code_ticker FROM assets ";
 			pstmt = conn.prepareStatement(query);
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
-				DataDTO dto = new DataDTO();
-				dto.setCountry("country");
-				dto.setName("name");
-				dto.setCode_ticker(rs.getString("code_ticker"));
-				
-				listOfAssets.add(dto);
+				list += "<tr><td>";
+				list += "<input type=\"checkbox\" name=\"asset\" /> ";
+				list += rs.getString("code_ticker");
+				list += "</td></tr>";
 			}
 			
 			rs.close();
@@ -54,9 +58,14 @@ public class DataDAO {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		
-		return listOfAssets;
+
+		return list;
+
 	} // END - public void ListEmAll()
+	
+	// ----------------------------------------
+	// 2. 그 다음
+	// ----------------------------------------	
 	
 	
 } // END - public class DataDAO{}
