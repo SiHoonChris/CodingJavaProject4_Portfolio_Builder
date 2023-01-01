@@ -16,6 +16,8 @@ public class DataDAO {
 	private PreparedStatement pstmt;
 	private ResultSet         rs;
 	
+	private List<DataDTO> wholeAssets = new ArrayList<DataDTO>();
+	int listSize;
 	
 	// ----------------------------------------
 	// 0. DB와의 연결통로 생성
@@ -40,14 +42,25 @@ public class DataDAO {
 		try {
 			conn = dataFactory.getConnection();
 
-			String query = "SELECT name, code_ticker FROM assets ";
+			String query = "SELECT country, name, code_ticker FROM assets ";
 			pstmt = conn.prepareStatement(query);
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
+				DataDTO dto = new DataDTO();
+				dto.setCountry(rs.getString("country"));
+				dto.setName(rs.getString("name"));
+				dto.setCode_ticker(rs.getString("code_ticker"));
+				wholeAssets.add(dto);
+			}
+			
+			listSize=wholeAssets.size();
+			for(int i=0; i<listSize; i++) {
 				list += "<tr><td>";
-				list += "<input type=\"checkbox\" name=\"asset\" /> ";
-				list += rs.getString("code_ticker");
+				list += "<input type=\"checkbox\" ";
+				list += "name=\""+wholeAssets.get(i).code_ticker+"\" /> ";
+				list += "<span id=\"list-no"+(i+1)+"\" name=\""+wholeAssets.get(i).name+"\"> ";
+				list += wholeAssets.get(i).code_ticker+"</span>";
 				list += "</td></tr>";
 			}
 			

@@ -3,6 +3,7 @@
 <%
 DataServlet srv = new DataServlet(); 
 String listOfAssets = srv.ShowAll();
+int range = srv.range;
 %>
 
 <!DOCTYPE html>
@@ -13,21 +14,10 @@ String listOfAssets = srv.ShowAll();
 		<meta name="viewport" content="width=device-width" initial-scale="1.0">
 		<title>Build your Portfolio!</title>
 		<link rel="stylesheet" type='text/css' href='PortfolioBuilder.css'>
-		
 		<script> // 테스트용 - 수정 예정
 			function add_assets() { // 선택 종목 포트폴리오에 추가
 				document.getElementById("selected").innerHTML='<tr><td><input type="checkbox"/> AAPL</td></tr>';
 			}
-			
-			let asset = document.getElementById("eliminate");
-			asset.addEventListener("mouseover", assetMouseOver);
-			asset.addEventListener("mouseout", assetMouseOut);
-			function assetMouseOver(){ // 마우스를 올리면 종목 코드/티커에 마우스 올리면 풀네임 보여줌
-				document.getElementById("fullname").innerHTML="fullname";
-			}
-			function assetMouseOut(){ // 마우스가 나가면 기본 문자열 보여줌
-				document.getElementById("fullname").innerHTML="종목명 상세";
-			}	
 		</script>
 	</head>
 	
@@ -57,9 +47,24 @@ String listOfAssets = srv.ShowAll();
 					</div>				
 				</div>
 				<div class="display">
-					<h3 id="fullname">종목명 상세</h3>
-					<!-- div(class="select") 내의 종목명에 마우스 올리면 div(class="display")에 종목 풀네임 출력 -->
-					<!-- Full-name이 길어서 칸 밖으로 나가면 애니메이션 효과 적용, 전광판처럼 우에서 좌로 이동 -->
+					<h3 id="full-name">종목명 상세</h3><!-- Full-name이 길어서 칸 밖으로 나가면 애니메이션 효과 적용, 전광판처럼 우에서 좌로 이동 -->
+					<script> // * 다수의 중복된 속성 존재시, 해당 속성들 중 제일 첫 번쨰 속성에만 메서드, 효과 등 적용
+						for(var i=1 ; i < <%=range+1 %> ; i++){
+							let id="list-no"+i;
+							let asset = document.getElementById(id);
+							asset.addEventListener("mouseover", assetMouseOver);
+							asset.addEventListener("mouseout", assetMouseOut);
+						}
+
+						// https://plainenglish.io/blog/how-to-get-the-id-of-the-clicked-element-in-the-javascript-click-handler-8ca398d848d6
+						function assetMouseOver(){ // 종목 코드/티커에 마우스 올리면 풀네임 보여줌
+							document.getElementById("full-name").innerHTML
+							= document.getElementById(event.srcElement.id).getAttribute("name");
+						}
+						function assetMouseOut(){ // 마우스가 나가면 기본 문자열 보여줌
+							document.getElementById("full-name").innerHTML="종목명 상세";
+						}
+					</script>
 				</div>
 				<div class="button">
 					<div id="add">

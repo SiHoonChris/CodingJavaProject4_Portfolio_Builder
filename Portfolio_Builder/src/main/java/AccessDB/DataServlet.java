@@ -16,11 +16,13 @@ import javax.servlet.http.HttpSession;
 //@WebServlet("/tester")
 public class DataServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	public int range=0;
 	
 	public String ShowAll() {
 		DataDAO dao = new DataDAO();
 		String AllAssets = dao.ListEmAll();
-		System.out.println(AllAssets);
+		range = dao.listSize;
+		System.out.println("[전체 종목 수 : "+range+"]");
 		
 		return AllAssets;
 	} // END - public String ShowAll()
