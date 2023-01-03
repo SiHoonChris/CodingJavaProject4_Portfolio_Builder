@@ -14,11 +14,6 @@ int range = srv.range;
 		<meta name="viewport" content="width=device-width" initial-scale="1.0">
 		<title>Build your Portfolio!</title>
 		<link rel="stylesheet" type='text/css' href='PortfolioBuilder.css'>
-		<script> // 테스트용 - 수정 예정
-			function add_assets() { // 선택 종목 포트폴리오에 추가
-				document.getElementById("selected").innerHTML='<tr><td><input type="checkbox"/> AAPL</td></tr>';
-			}
-		</script>
 	</head>
 	
 	<body>
@@ -48,7 +43,7 @@ int range = srv.range;
 				</div>
 				<div class="display">
 					<h3 id="full-name">종목명 상세</h3><!-- Full-name이 길어서 칸 밖으로 나가면 애니메이션 효과 적용, 전광판처럼 우에서 좌로 이동 -->
-					<script> // * 다수의 중복된 속성 존재시, 해당 속성들 중 제일 첫 번쨰 속성에만 메서드, 효과 등 적용
+					<script> // * 다수의 중복된 속성 존재시, 해당 속성들 중 제일 첫 번쨰 속성에만 메서드, 효과 등 적용됨
 						for(var i=1 ; i < <%=range+1 %> ; i++){
 							let id="list-no"+i;
 							let asset = document.getElementById(id);
@@ -64,11 +59,40 @@ int range = srv.range;
 						function assetMouseOut(){ // 마우스가 나가면 기본 문자열 보여줌
 							document.getElementById("full-name").innerHTML="종목명 상세";
 						}
+						
+						let checkValue = [];
+						// https://hianna.tistory.com/430
+						// https://gent.tistory.com/295
+						// https://stackoverflow.com/questions/3954438/how-to-remove-item-from-array-by-value
+						// https://mine-it-record.tistory.com/352
+						function getCheckboxValue(event){ // 체크된 항목들을 배열에 저장
+							let name='';
+							
+							if(event.target.checked) {
+								name = event.target.name;
+								checkValue.push(name);
+							}
+							
+							// 체크가 해제 될 시 어떻게 배열에서 삭제함?
+						}
 					</script>
 				</div>
 				<div class="button">
 					<div id="add">
 						<button type="button" onclick="add_assets()">추가</button>
+						<script>
+							function add_assets() { // 선택 종목 포트폴리오에 추가
+								let assetName="<tbody>";				
+								for(var i=0; i<checkValue.length; i++){
+									assetName += '<tr><td><input type="checkbox"/> ';
+									assetName += checkValue[i];
+									assetName += '</td></tr>';
+								}
+								assetName += "</tbody>";
+								
+								document.getElementById("selected").innerHTML = assetName;
+							}
+						</script>
 					</div>
 					<div id="remove">
 						<button id="eliminate">제거</button>

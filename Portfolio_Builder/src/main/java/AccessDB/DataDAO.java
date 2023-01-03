@@ -54,15 +54,17 @@ public class DataDAO {
 				wholeAssets.add(dto);
 			}
 			
+			list="<tbody>";
 			listSize=wholeAssets.size();
 			for(int i=0; i<listSize; i++) {
 				list += "<tr><td>";
 				list += "<input type=\"checkbox\" ";
-				list += "name=\""+wholeAssets.get(i).code_ticker+"\" /> ";
+				list += "name=\""+wholeAssets.get(i).code_ticker+"\" onclick=\"getCheckboxValue(event)\" /> ";
 				list += "<span id=\"list-no"+(i+1)+"\" name=\""+wholeAssets.get(i).name+"\"> ";
 				list += wholeAssets.get(i).code_ticker+"</span>";
 				list += "</td></tr>";
 			}
+			list+="</tbody>";
 			
 			rs.close();
 			pstmt.close();

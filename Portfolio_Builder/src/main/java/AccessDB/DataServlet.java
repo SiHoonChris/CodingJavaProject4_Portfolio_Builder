@@ -42,5 +42,4 @@ public class DataServlet extends HttpServlet {
 	} // END - protected void doHandle(request, response) throws Exceptions
 	
 	
-	
 } //END - public class DataServlet{}
