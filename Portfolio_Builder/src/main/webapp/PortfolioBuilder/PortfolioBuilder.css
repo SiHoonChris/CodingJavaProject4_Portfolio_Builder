@@ -1,4 +1,5 @@
 @charset "UTF-8";
+/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Box_Alignment_in_CSS_Grid_Layout */
 
 /* 전체 ----------------------------------------------------------------- */
 	.container {
@@ -42,6 +43,11 @@
    			"a a c b b"
    			"a a c b b";
 	}
+	.TL p {
+		margin-top: 7.5px;
+		margin-bottom: 0px;
+	}
+	
 	.TL .select   {
 		grid-area: a;
 		border: 1px solid black;
@@ -88,9 +94,11 @@
    			"b"
 	}
 	.TL .selected .type   {grid-area: a;}
+	.TL .selected .type p {float:left; padding-left:15px;}
+	
 	.TL .selected .scroll {grid-area: b;}
 		
-	.TL .display  {grid-area: d; border: 1px solid black;}
+	.TL .display  {grid-area: d; border: 1px solid black; padding-left:10px;}
 	.TL .button   {
 		grid-area: c;
 			

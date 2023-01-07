@@ -35,9 +35,11 @@ public class DataDAO {
 	// ----------------------------------------
 	// 1. 선택 가능한 종목 전체 가져오기
 	// ----------------------------------------
-	public String ListEmAll() {
+	public ArrayList<String> ListEmAll() {
 		
+		ArrayList<String> info = new ArrayList<String>();
 		String list="";
+		String numberOfAssets="";
 		
 		try {
 			conn = dataFactory.getConnection();
@@ -58,13 +60,14 @@ public class DataDAO {
 			listSize=wholeAssets.size();
 			for(int i=0; i<listSize; i++) {
 				list += "<tr><td>";
-				list += "<input type=\"checkbox\" ";
-				list += "name=\""+wholeAssets.get(i).code_ticker+"\" onclick=\"getCheckboxValue(event)\" /> ";
+				list += "<input type=\"checkbox\" name=\"TL_checkbox\" ";
+				list += "id=\""+wholeAssets.get(i).code_ticker+"\" onclick=\"getCheckboxValue(event)\" /> ";
 				list += "<span id=\"list-no"+(i+1)+"\" name=\""+wholeAssets.get(i).name+"\"> ";
 				list += wholeAssets.get(i).code_ticker+"</span>";
 				list += "</td></tr>";
 			}
 			list+="</tbody>";
+			numberOfAssets=Integer.toString(listSize);
 			
 			rs.close();
 			pstmt.close();
@@ -73,8 +76,11 @@ public class DataDAO {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+		
+		info.add(numberOfAssets);
+		info.add(list);
 
-		return list;
+		return info;
 
 	} // END - public void ListEmAll()
 	
