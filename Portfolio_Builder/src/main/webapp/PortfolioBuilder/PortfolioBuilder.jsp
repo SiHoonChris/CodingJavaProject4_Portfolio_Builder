@@ -70,65 +70,27 @@ int range = srv.range;
 <!-- BL 파트 -->
   			<div id="method" class="BL">
   				<div class="select">
-  					<div class="title">포트폴리오 구성방식 선택</div>
-  					<div class="scroll">
+  					<div class="title"><b>&nbsp;포트폴리오 가중 방식</b></div>
+  					<div class="scroll" align="center">
   						<table>
   							<tr>
   								<td>
-  									<input type="radio"/>동일 가중평균
+  									<input type="radio" id="ewi" name="Method" onclick="select_method(event)"/>동일 가중방식
+  								</td>
   								<td>
+  									<input type="radio" id="cwi" name="Method" onclick="select_method(event)"/>시가총액 가중방식
+  								</td>
   								<td>
-  									<input type="radio"/>시가총액 가중평균
-  								<td>
-  							</tr>
-  							<tr>
-  								<td>
-  									<input type="radio"/>자체제작 방식
-  								<td>
-  								<td>
-  									<input type="radio"/>뭐시기 가중평균
-  								<td>
-  							</tr>
-  							<tr>
-  								<td>
-  									<input type="radio"/>동일 가중평균
-  								<td>
-  								<td>
-  									<input type="radio"/>시가총액 가중평균
-  								<td>
-  							</tr>
-  							<tr>
-  								<td>
-  									<input type="radio"/>자체제작 방식
-  								<td>
-  								<td>
-  									<input type="radio"/>뭐시기 가중평균
-  								<td>
-  							</tr>
-  							<tr>
-  								<td>
-  									<input type="radio"/>동일 가중평균
-  								<td>
-  								<td>
-  									<input type="radio"/>시가총액 가중평균
-  								<td>
-  							</tr>
-  							<tr>
-  								<td>
-  									<input type="radio"/>자체제작 방식
-  								<td>
-  								<td>
-  									<input type="radio"/>뭐시기 가중평균
-  								<td>
+  									<input type="radio" id="shcwi" name="Method" onclick="select_method(event)"/>SiHoonChris 가중방식
+  								</td>
   							</tr>
   						</table>
   					</div>
   				</div>
-  				<!-- 라디오버튼 적용 -->
   				<div class="selected">
-  					<div>동일 가중평균</div>
+  					<div id="p_method">(이름)</div>
   					<br/>
-  					<div>포트폴리오 내의 모든 종목에 대해 같은 비율로 투자하는 것을 의미함</div>
+  					<div id="p_expl">(설명)</div>
   				</div>
   				<div class="button">
   					<button>실행</button>
@@ -144,7 +106,7 @@ int range = srv.range;
 	</body>
 	
 	<script>
-// TL 파트 스크립트
+// TL 파트 스크립트 - 시작
 	// 별도의 확인 버튼 없이, 입력된 문자열을 포함하는 내용을 자동으로 <table>형태로 표시. 만약 없으면 찾는 결과가 없다("None")고 출력 (AJAX ?)
 	// 미국주식의 경우, 대소문자 구분 없이 검색 가능하게 코드 작성
 
@@ -168,7 +130,7 @@ int range = srv.range;
 		let checkedValue = [];  // checkedValue 배열에 담아서 selectedAssets 배열로 옮김
 		let selectedAssets=[];  // 종목 선택에 대한 종합적인 결과를 출력하는 배열
 		const map = new Map();  // 4-1)에서 사용 : key는 종목명, value는 그 종목의 위치(배열 안)
-		let assetName="";	
+		let assetName="";
 		
 	// 2) 버튼 공통 적용
 		function aft_buttonClicked() {
@@ -256,7 +218,40 @@ int range = srv.range;
 				aft_buttonClicked();
 			}
 		}		
-// TL 파트 스크립트
+// TL 파트 스크립트 - 끝
+
+// BL 파트 스크립트 - 시작
+	// 1) 포트폴리오 가중 방식에 대한 설명을 보여준다
+		let method=document.querySelector("#p_method");
+		let expl=document.querySelector("#p_expl");
+	
+		document.addEventListener('change', function(e){
+			let target = e.target;
+			let title;
+			let explanation;
+			
+			switch(target.id) {
+				case 'ewi':
+					title="동일 가중방식";
+					explanation = "모든 구성 종목에 동일한 비중으로 투자한다. 중소형주의 주가변화가 상대적으로 높게 반영된다.";
+					break;
+				case 'cwi':
+					title="시가총액 가중방식";
+					explanation = "시가총액에 비례하여 구성 종목의 투자 비중을 설정한다. 대형주의 주가변화가 상대적으로 높게 반영된다.";
+					break;
+				case 'shcwi':
+					title="SiHoonChris 가중방식";
+					explanation = "SiHoonChris가 Ray Dalio의 Risk-Parity Portfolio 전략에서 파생시킨 가중방식으로, ";
+					explanation +="특정 기간 동안의 연간 수익률이 가지는 표준편차를 기준으로 투자비중을 설정하는 방식이다. ";
+					explanation +="표준편차가 낮을수록 높은 투자비중을 갖게 되며, 기대수익률은 기간 동안의 연평균 수익률에서 ";
+					explanation +="표준편차의 크기에 비례하는 수익률을 감하여 계산한다.";
+			}
+			
+			method.textContent = title;
+			expl.textContent = explanation;
+		});
+		
+// BL 파트 스크립트 - 끝
 
 	</script>
 </html>

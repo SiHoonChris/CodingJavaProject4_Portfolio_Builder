@@ -44,7 +44,7 @@ public class DataDAO {
 		try {
 			conn = dataFactory.getConnection();
 
-			String query = "SELECT country, name, code_ticker FROM assets ";
+			String query = "SELECT * FROM assets ";
 			pstmt = conn.prepareStatement(query);
 			rs = pstmt.executeQuery();
 			
@@ -55,6 +55,8 @@ public class DataDAO {
 				dto.setCode_ticker(rs.getString("code_ticker"));
 				wholeAssets.add(dto);
 			}
+			
+			// 출력 시 KR 제외한 부분만 출력
 			
 			list="<tbody>";
 			listSize=wholeAssets.size();
@@ -85,7 +87,7 @@ public class DataDAO {
 	} // END - public void ListEmAll()
 	
 	// ----------------------------------------
-	// 2. 그 다음
+	// 2. 동일 가중방식 구현
 	// ----------------------------------------	
 	
 	
