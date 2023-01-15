@@ -14,6 +14,7 @@ public class DataServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	public int range=0;
 	
+	// 웹페이지 실행시 DB 내에 저장된 종목들의 정보를 출력함
 	public ArrayList<String> ShowAll() {
 		DataDAO dao = new DataDAO();
 		ArrayList<String> AllAssets = dao.ListEmAll();
@@ -24,16 +25,14 @@ public class DataServlet extends HttpServlet {
 	} // END - public String ShowAll()
 	
 	
-	public void init() throws ServletException {
-	} // END - public void init() throws ServletException{}
-	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {doHandle(request, response);}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {doHandle(request, response);}
 
-	// 버튼 클릭에 따른 실행 상황 정의(SQL 관련 작업)
+	// 선택된 종목들(n개)과 선택된 포트폴리오 가중방법(1개)을 가지고 출력할 결과물을 생성
 	protected void doHandle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		
 	} // END - protected void doHandle(request, response) throws Exceptions
 	

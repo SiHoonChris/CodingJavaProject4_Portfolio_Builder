@@ -122,10 +122,21 @@
 	.TR {
  			grid-area: b;
 	}
-	#table {
+	#table  {
 		border: 1px solid black;
 		height: 92%;
 	}
+	#result_table table {
+		border: 1px solid;
+		border-collapse: collapse;
+	}
+	#result_table th {
+		border: 1px solid;
+	}
+	#result_table td {
+		border: 1px solid;
+	}
+	
 	.time {float: right;}
 /* (Top-Right) 선택된 종목에 대하여 표 생성 ------------------------------------ */
 	
