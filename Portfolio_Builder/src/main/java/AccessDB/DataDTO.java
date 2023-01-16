@@ -1,7 +1,8 @@
 package AccessDB;
 
 public class DataDTO {
-	String country, name, code_ticker;
+	String country, name, code_ticker, avg_yield;
+	//float avg_yield;
 	
 	public DataDTO() {}
 
@@ -11,6 +12,10 @@ public class DataDTO {
 	public void   setName(String name)               {this.name = name;}
 	public String getCode_ticker()                   {return code_ticker;}
 	public void   setCode_ticker(String code_ticker) {this.code_ticker = code_ticker;}
+	public String getAvg_yield() {return avg_yield;}
+	public void setAvg_yield(float avg_yield) {
+		this.avg_yield =String.format("%.2f", (avg_yield-1)*100);
+	}
 
 	@Override
 	public String toString() {

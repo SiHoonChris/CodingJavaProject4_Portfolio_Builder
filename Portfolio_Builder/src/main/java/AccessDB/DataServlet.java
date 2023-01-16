@@ -24,6 +24,12 @@ public class DataServlet extends HttpServlet {
 		return AllAssets;
 	} // END - public String ShowAll()
 	
+	public String Tester() {
+		DataDAO dao = new DataDAO();
+		String html = dao.EqualWeightIndex();
+		return html;
+	} // END - public String Tester()
+	
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {doHandle(request, response);}

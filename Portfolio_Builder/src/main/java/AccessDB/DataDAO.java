@@ -19,6 +19,7 @@ public class DataDAO {
 	private List<DataDTO> wholeAssets = new ArrayList<DataDTO>();
 	int listSize;
 	
+	
 	// ----------------------------------------
 	// 0. DB와의 연결통로 생성
 	// ----------------------------------------
@@ -86,9 +87,52 @@ public class DataDAO {
 
 	} // END - public void ListEmAll()
 	
+	
 	// ----------------------------------------
 	// 2. 동일 가중방식 구현
 	// ----------------------------------------	
+	public String EqualWeightIndex() {
+		List<DataDTO> statsForTable = new ArrayList<DataDTO>();
+		String tableComponent="";
+		
+		try {
+			conn = dataFactory.getConnection();
+			
+			String query = "SELECT code_ticker, Annual_AVG FROM stats;"; //JOIN개념 활용해서 code_ticker와 일치하는 name 가져오기
+			pstmt = conn.prepareStatement(query);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				DataDTO dto = new DataDTO();
+				dto.setCode_ticker(rs.getString("code_ticker"));
+				dto.setAvg_yield(rs.getFloat("Annual_AVG"));
+				statsForTable.add(dto);
+			}
+			
+			for(int i=0; i<statsForTable.size(); i++) {
+				tableComponent += "<tr>";
+				tableComponent += "<td id='No'>"+(i+1)+"</td>";
+				tableComponent += "<td id='CodeTicker'>"+statsForTable.get(i).code_ticker+"</td>";
+				tableComponent += "<td id='NameOfStock'>"+"종목명"+"</td>";
+				tableComponent += "<td id='YieldRate'>"+statsForTable.get(i).avg_yield+"%</td>";
+				tableComponent += "<td id='Porportion'>"+String.format("%.2f", ((1/(float)(statsForTable.size()))*100))+"%</td>";
+				tableComponent += "</tr>";
+			}
+			
+			rs.close();
+			pstmt.close();
+			conn.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println(tableComponent);
+		
+		return tableComponent;
+	} // public String EqualWeightIndex()
+	
+	
 	
 	
 } // END - public class DataDAO{}

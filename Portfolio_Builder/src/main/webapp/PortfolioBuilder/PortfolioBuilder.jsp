@@ -4,7 +4,7 @@
 <%
 DataServlet srv = new DataServlet(); 
 ArrayList<String> listOfAssets = srv.ShowAll();
-int range = srv.range;
+String tester = srv.Tester();
 %>
 
 <!DOCTYPE html>
@@ -63,28 +63,28 @@ int range = srv.range;
 <!-- TR 파트 -->
   			<div class="TR">
   				<div id="table">
-  					<table id="result_table">
-  						<thead>
-  							<tr>
-  								<th>No.</th>
-  								<th>코드/티커</th>
-  								<th>종목명</th>
-  								<th>수익률</th>
-  								<th>투자 비중</th>
-  							</tr>
-  						</thead>
-  						<tbody>
-  							<tr>
-  								<td>ex)1</td>
-  								<td>ex)AAPL</td>
-  								<td>ex)Apple Inc.</td>
-  								<td>ex)1.2048</td>
-  								<td>ex)0.1328</td>
-  							</tr>
-  						</tbody>
-  					</table>
+  					<div id="portfolio_table_head">
+	  					<table>
+	  						<thead>
+	  							<tr>
+	  								<th id="No">No.</th>
+	  								<th id="CodeTicker">코드/티커</th>
+	  								<th id="NameOfStock">종목명</th>
+	  								<th id="YieldRate">수익률</th>
+	  								<th id="Porportion">비중</th>
+	  							</tr>
+	  						</thead>
+	  					</table>
+  					</div>
+  					<div id="portfolio_table_rows" class="scroll">
+	  					<table>
+	  						<tbody>
+	  							<%=tester %>
+	  						</tbody>
+	  					</table>
+  					</div>
   				</div>
-  				<span class="date">(업데이트 : 2022.12)</span>
+  				<span class="date">(자료 업데이트 : 2022.12)</span>
   				<span class="time">(X.XXXXsec.)</span>
   			</div>
 <!-- TR 파트 -->
