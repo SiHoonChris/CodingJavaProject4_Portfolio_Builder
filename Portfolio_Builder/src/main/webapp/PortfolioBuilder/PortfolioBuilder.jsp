@@ -4,7 +4,8 @@
 <%
 DataServlet srv = new DataServlet(); 
 ArrayList<String> listOfAssets = srv.ShowAll();
-String tester = srv.Tester();
+//String html = srv.Tester();
+String html = (String)request.getAttribute("html_txt");
 %>
 
 <!DOCTYPE html>
@@ -20,7 +21,7 @@ String tester = srv.Tester();
 <!-- TL 파트 -->
 			<div id="stock" class="TL">
 				<div class="select" align="center">
-					<div class="type">		
+					<div class="type">
 						<p>
 							<input type="text" placeholder="종목명 검색"/>
 							<span title="전체 종목 수" id="Total">&nbsp;<%=listOfAssets.get(0) %></span>
@@ -60,6 +61,40 @@ String tester = srv.Tester();
 				</div>
 			</div>
 <!-- TL 파트 -->
+<!-- BL 파트 -->
+  			<form name="Method" action="/portfolio">
+  			<div id="method" class="BL">
+  				<div class="select">
+  					<div class="title"><b>&nbsp;포트폴리오 가중 방식</b></div>
+  					<div class="scroll" align="center">
+  						<table>
+  							<tr>
+  								<td>
+  									<input type="radio" id="ewi" name="Method" value="ewi" onclick="select_method(event)"/>동일 가중방식
+  								</td>
+  								<td>
+  									<input type="radio" id="cwi" name="Method" value="cwi" onclick="select_method(event)"/>시가총액 가중방식
+  								</td>
+  								<td>
+  									<input type="radio" id="shcwi" name="Method" value="shcwi" onclick="select_method(event)"/>SiHoonChris 가중방식
+  								</td>
+  							</tr>
+  						</table>
+
+  					</div>
+  				</div>
+			
+  				<div class="selected">
+  					<div id="p_method">[이름]</div>
+  					<br/>
+  					<div id="p_expl">[설명]</div>
+  				</div>
+  				<div class="button">
+  					<button type="submit">실행</button>
+  				</div>
+  			</div>
+  			</form>
+<!-- BL 파트 -->
 <!-- TR 파트 -->
   			<div class="TR">
   				<div id="table">
@@ -79,7 +114,7 @@ String tester = srv.Tester();
   					<div id="portfolio_table_rows" class="scroll">
 	  					<table>
 	  						<tbody>
-	  							<%=tester %>
+	  							<%=html %>
 	  						</tbody>
 	  					</table>
   					</div>
@@ -88,36 +123,6 @@ String tester = srv.Tester();
   				<span class="time">(X.XXXXsec.)</span>
   			</div>
 <!-- TR 파트 -->
-<!-- BL 파트 -->
-  			<div id="method" class="BL">
-  				<div class="select">
-  					<div class="title"><b>&nbsp;포트폴리오 가중 방식</b></div>
-  					<div class="scroll" align="center">
-  						<table>
-  							<tr>
-  								<td>
-  									<input type="radio" id="ewi" name="Method" value="ewi" onclick="select_method(event)"/>동일 가중방식
-  								</td>
-  								<td>
-  									<input type="radio" id="cwi" name="Method" value="cwi" onclick="select_method(event)"/>시가총액 가중방식
-  								</td>
-  								<td>
-  									<input type="radio" id="shcwi" name="Method" value="shcwi" onclick="select_method(event)"/>SiHoonChris 가중방식
-  								</td>
-  							</tr>
-  						</table>
-  					</div>
-  				</div>
-  				<div class="selected">
-  					<div id="p_method">[이름]</div>
-  					<br/>
-  					<div id="p_expl">[설명]</div>
-  				</div>
-  				<div class="button">
-  					<button>실행</button>
-  				</div>
-  			</div>
-<!-- BL 파트 -->
 <!-- BR 파트 -->
  			<div id="chart" class="BR">
   				도넛모양 차트

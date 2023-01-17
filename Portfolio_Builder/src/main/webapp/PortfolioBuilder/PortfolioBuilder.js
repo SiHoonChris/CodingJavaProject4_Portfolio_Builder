@@ -159,3 +159,5 @@ function select_method(event) {
 	method.textContent = title;
 	expl.textContent   = explanation;
 }
+
+// BL-2) 실행 버튼 구현

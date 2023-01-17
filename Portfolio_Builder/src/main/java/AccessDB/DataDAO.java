@@ -57,8 +57,6 @@ public class DataDAO {
 				wholeAssets.add(dto);
 			}
 			
-			// 출력 시 KR 제외한 부분만 출력
-			
 			list="<tbody>";
 			listSize=wholeAssets.size();
 			for(int i=0; i<listSize; i++) {
@@ -98,13 +96,19 @@ public class DataDAO {
 		try {
 			conn = dataFactory.getConnection();
 			
-			String query = "SELECT code_ticker, Annual_AVG FROM stats;"; //JOIN개념 활용해서 code_ticker와 일치하는 name 가져오기
+			String query
+			= "SELECT stats.code_ticker, assets.name, stats.Annual_AVG "
+			  + "FROM stats, assets "
+			  + "WHERE stats.code_ticker=assets.code_ticker "
+			  + "AND stats.code_ticker IN ('기아', 'GOOGL', '삼성전자', 'AAPL', 'GLD', 'MSFT'); ";
+			                        // IN ('포트폴리오에 추가된 종목의 code_ticker' 넣기)
 			pstmt = conn.prepareStatement(query);
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
 				DataDTO dto = new DataDTO();
 				dto.setCode_ticker(rs.getString("code_ticker"));
+				dto.setName(rs.getString("name"));
 				dto.setAvg_yield(rs.getFloat("Annual_AVG"));
 				statsForTable.add(dto);
 			}
@@ -113,7 +117,7 @@ public class DataDAO {
 				tableComponent += "<tr>";
 				tableComponent += "<td id='No'>"+(i+1)+"</td>";
 				tableComponent += "<td id='CodeTicker'>"+statsForTable.get(i).code_ticker+"</td>";
-				tableComponent += "<td id='NameOfStock'>"+"종목명"+"</td>";
+				tableComponent += "<td id='NameOfStock'>"+statsForTable.get(i).name+"</td>";
 				tableComponent += "<td id='YieldRate'>"+statsForTable.get(i).avg_yield+"%</td>";
 				tableComponent += "<td id='Porportion'>"+String.format("%.2f", ((1/(float)(statsForTable.size()))*100))+"%</td>";
 				tableComponent += "</tr>";
