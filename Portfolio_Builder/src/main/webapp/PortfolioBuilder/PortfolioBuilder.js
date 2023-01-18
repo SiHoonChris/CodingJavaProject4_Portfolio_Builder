@@ -43,9 +43,6 @@ function aft_buttonClicked() {
 	}
 	checkedValue_add=[];
 	checkedValue_remove=[];
-	//console.log(selectedAssets);
-	//console.log(checkedValue_add);
-	//console.log(checkedValue_remove);
 }
 	
 // TL-3-1) 추가 : 체크된 항목들을 checkedValue배열에 담기
@@ -161,3 +158,19 @@ function select_method(event) {
 }
 
 // BL-2) 실행 버튼 구현
+function fn_sendDatas(event){
+	let html_string="";
+	for(var i=0; i<selectedAssets.length; i++ ){
+		if(i==selectedAssets.length-1) {html_string += "'"+selectedAssets[i]+"'";}
+		else {html_string += "'"+selectedAssets[i]+"', "};
+	}
+	document.getElementById("nameOfAssets").value = html_string;
+
+	let AssetsAndMethod = document.AssetsAndMethod;
+	let Method = AssetsAndMethod.Method.value;
+	let Assets = AssetsAndMethod.Assets.value;
+	
+	AssetsAndMethod.method="post";
+	AssetsAndMethod.action="/result";
+	AssetsAndMethod.submit();
+}

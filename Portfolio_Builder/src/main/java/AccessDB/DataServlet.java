@@ -12,10 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 
-@WebServlet("/portfolio")
+@WebServlet("/result")
 public class DataServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	public int range=0;
+	
 	
 	// 웹페이지 실행시 DB 내에 저장된 종목들의 정보를 출력함
 	public ArrayList<String> ShowAll() {
@@ -25,32 +26,25 @@ public class DataServlet extends HttpServlet {
 		System.out.println("[전체 종목 수 : "+range+"]");
 		
 		return AllAssets;
-	} // END - public String ShowAll()
+	} // public String ShowAll()
 	
-	public String Tester() {
-		DataDAO dao = new DataDAO();
-		String html = dao.EqualWeightIndex();
-		return html;
-	} // END - public String Tester()
-
 	
+	// 선택된 종목들(n개)과 선택된 포트폴리오 가중방법(1개)을 가지고 출력할 결과물을 생성
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {doHandle(request, response);}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {doHandle(request, response);}
-
-	// 선택된 종목들(n개)과 선택된 포트폴리오 가중방법(1개)을 가지고 출력할 결과물을 생성
+	
 	protected void doHandle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html;charset=UTF-8");
-
-		String weighing_method = request.getParameter("Method");
 		
-		if(weighing_method.equals("ewi")) {
-			System.out.println(weighing_method);
-			
+		String Method = request.getParameter("Method");
+		String Assets = request.getParameter("Assets");
+		
+		if(Method.equals("ewi")) { // ewi방식 구현 완료
 			DataDAO dao = new DataDAO();
-			String html_txt = dao.EqualWeightIndex();
+			String html_txt = dao.EqualWeightIndex(Assets);
 			request.setAttribute("html_txt", html_txt);
 			
 			RequestDispatcher dispatcher
@@ -58,23 +52,25 @@ public class DataServlet extends HttpServlet {
 			dispatcher.forward(request, response);
 		}
 		
-		else if(weighing_method.equals("cwi")) {
-			System.out.println(weighing_method);
-		}
-		else if(weighing_method.equals("shcwi")) {
-			System.out.println(weighing_method);
+		else if(Method.equals("cwi")) {
+			DataDAO dao = new DataDAO();
+			String html_txt = dao.CapitalizationWeightIndex(Assets);
+			request.setAttribute("html_txt", html_txt);
+			
+			RequestDispatcher dispatcher
+			= request.getRequestDispatcher("/PortfolioBuilder/PortfolioBuilder.jsp");
+			dispatcher.forward(request, response);
 		}
 		
-	} // END - protected void doHandle(request, response) throws Exceptions
+		else if(Method.equals("shcwi")) {
+			DataDAO dao = new DataDAO();
+			String html_txt = dao.SihoonChrisWeightIndex(Assets);
+			request.setAttribute("html_txt", html_txt);
+			
+			RequestDispatcher dispatcher
+			= request.getRequestDispatcher("/PortfolioBuilder/PortfolioBuilder.jsp");
+			dispatcher.forward(request, response);
+		}
+	} // protected void doHandle()
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-} //END - public class DataServlet{}
+} // END - public class DataServlet{}

@@ -31,7 +31,7 @@ public class DataDAO {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-	} // END - public DataDAO()
+	} // public DataDAO()
 
 	// ----------------------------------------
 	// 1. 선택 가능한 종목 전체 가져오기
@@ -83,13 +83,12 @@ public class DataDAO {
 
 		return info;
 
-	} // END - public void ListEmAll()
-	
+	} // public void ListEmAll()
 	
 	// ----------------------------------------
 	// 2. 동일 가중방식 구현
 	// ----------------------------------------	
-	public String EqualWeightIndex() {
+	public String EqualWeightIndex(String forQuery) {
 		List<DataDTO> statsForTable = new ArrayList<DataDTO>();
 		String tableComponent="";
 		
@@ -100,8 +99,9 @@ public class DataDAO {
 			= "SELECT stats.code_ticker, assets.name, stats.Annual_AVG "
 			  + "FROM stats, assets "
 			  + "WHERE stats.code_ticker=assets.code_ticker "
-			  + "AND stats.code_ticker IN ('기아', 'GOOGL', '삼성전자', 'AAPL', 'GLD', 'MSFT'); ";
-			                        // IN ('포트폴리오에 추가된 종목의 code_ticker' 넣기)
+			  + "AND stats.code_ticker IN ("
+			  + forQuery+"); ";
+			
 			pstmt = conn.prepareStatement(query);
 			rs = pstmt.executeQuery();
 			
@@ -136,7 +136,21 @@ public class DataDAO {
 		return tableComponent;
 	} // public String EqualWeightIndex()
 	
+	// ----------------------------------------
+	// 3. 시가총액 가중방식 구현
+	// ----------------------------------------	
+	public String CapitalizationWeightIndex(String forQuery) {
+		String tableComponent="";
+		return tableComponent;
+	} // public String CapitalizationWeightIndex()
 	
+	// ----------------------------------------
+	// 4. SiHoonChris 가중방식 구현
+	// ----------------------------------------	
+	public String SihoonChrisWeightIndex(String forQuery) {
+		String tableComponent="";
+		return tableComponent;
+	} // public String SihoonChrisWeightIndex()
 	
 	
 } // END - public class DataDAO{}
