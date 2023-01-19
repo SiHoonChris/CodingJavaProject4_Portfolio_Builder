@@ -1,0 +1,226 @@
+-- ----------------------------------------------------------------------
+--                               < assets >
+-- ----------------------------------------------------------------------
+-- 테이블 생성(assets) : 국가, 종목명, 티커/코드
+CREATE TABLE assets (
+	country      VARCHAR(15) NOT NULL,
+	name         VARCHAR(100) NOT NULL,
+	code_ticker  VARCHAR(10) PRIMARY KEY
+);
+
+-- 내용 입력 (종목 데이터 : 국내주식 15종목, 해외주식 15종목)
+-- 1~5
+INSERT INTO assets(country, name, code_ticker) VALUES ('USA', 'Exxon Mobil Corporation' , 'XOM');
+INSERT INTO assets(country, name, code_ticker) VALUES ('USA', 'NIKE Inc.' , 'NKE');
+INSERT INTO assets(country, name, code_ticker) VALUES ('USA', "McDonald's Corporation" , 'MCD');
+INSERT INTO assets(country, name, code_ticker) VALUES ('USA', 'Walmart Inc.' , 'WMT');
+INSERT INTO assets(country, name, code_ticker) VALUES ('USA', 'Alphabet Inc.' , 'GOOGL');
+-- 6~10
+INSERT INTO assets(country, name, code_ticker) VALUES ('USA', 'Tesla Inc.' , 'TSLA');
+INSERT INTO assets(country, name, code_ticker) VALUES ('USA', 'iShares 20+ Year Treasury Bond ETF' , 'TLT');
+INSERT INTO assets(country, name, code_ticker) VALUES ('USA', 'iShares 7-10 Year Treasury Bond ETF' , 'IEF');
+INSERT INTO assets(country, name, code_ticker) VALUES ('USA', 'SPDR Gold Shares' , 'GLD');
+INSERT INTO assets(country, name, code_ticker) VALUES ('USA', 'Apple Inc.' , 'AAPL');
+-- 11~15
+INSERT INTO assets(country, name, code_ticker) VALUES ('USA', 'LOCKHEED MARTIN CORP', 'LMT');
+INSERT INTO assets(country, name, code_ticker) VALUES ('USA', 'MICROSOFT CORP', 'MSFT');
+INSERT INTO assets(country, name, code_ticker) VALUES ('USA', 'PROCTER & GAMBLE Co', 'PG');
+INSERT INTO assets(country, name, code_ticker) VALUES ('USA', 'JOHNSON & JOHNSON', 'JNJ');
+INSERT INTO assets(country, name, code_ticker) VALUES ('USA', 'INVESCO QQQ TRUST, SERIES 1', 'QQQ');
+-- 16~20
+INSERT INTO assets(country, name, code_ticker) VALUES ('KOREA', '삼성전자', '005930');
+INSERT INTO assets(country, name, code_ticker) VALUES ('KOREA', 'LG에너지솔루션', '373220');
+INSERT INTO assets(country, name, code_ticker) VALUES ('KOREA', '삼성바이오로직스', '207940');
+INSERT INTO assets(country, name, code_ticker) VALUES ('KOREA', 'SK하이닉스', '000660');
+INSERT INTO assets(country, name, code_ticker) VALUES ('KOREA', 'LG화학', '051910');
+-- 21~25
+INSERT INTO assets(country, name, code_ticker) VALUES ('KOREA', '삼성전자우', '005935');
+INSERT INTO assets(country, name, code_ticker) VALUES ('KOREA', '삼성SDI', '006400');
+INSERT INTO assets(country, name, code_ticker) VALUES ('KOREA', '현대차', '005380');
+INSERT INTO assets(country, name, code_ticker) VALUES ('KOREA', 'NAVER', '035420');
+INSERT INTO assets(country, name, code_ticker) VALUES ('KOREA', '기아', '000270');
+-- 26~30
+INSERT INTO assets(country, name, code_ticker) VALUES ('KOREA', '셀트리온', '068270');
+INSERT INTO assets(country, name, code_ticker) VALUES ('KOREA', 'POSCO홀딩스', '005490');
+INSERT INTO assets(country, name, code_ticker) VALUES ('KOREA', '카카오', '035720');
+INSERT INTO assets(country, name, code_ticker) VALUES ('KOREA', '삼성물산', '028260');
+INSERT INTO assets(country, name, code_ticker) VALUES ('KOREA', 'KB금융', '105560');
+
+-- 국내 주식의 경우 name과 code_ticker가 동일하도록 수정
+UPDATE assets
+SET code_ticker = "KB금융"
+WHERE country="KOREA" AND name = "KB금융";
+-- ----------------------------------------------------------------------
+-- ----------------------------------------------------------------------
+
+
+-- ----------------------------------------------------------------------
+--                           < annual_yield >
+-- ----------------------------------------------------------------------
+-- 테이블 생성(annual_yield) : 종목별 연 수익률 정보 (2012~2023)
+CREATE TABLE annual_yield (
+	YEAR INT AUTO_INCREMENT UNIQUE
+);
+ALTER TABLE annual_yield
+AUTO_INCREMENT=2012;
+
+-- DUMMY DATA 활용 : 연도 생성
+ALTER TABLE annual_yield
+ADD DUM DECIMAL(5,4);
+INSERT INTO annual_yield(DUM) VALUES (0);
+
+-- 종목(Column) 추가
+ALTER TABLE annual_yield
+ADD XOM DECIMAL(5,4);
+
+-- 해당 종목의 연도별 데이터(연수익률) 입력
+UPDATE annual_yield
+SET 삼성전자 = 1.4386
+WHERE YEAR=2012;
+-- * 01/12/2023 21:00경 기준
+UPDATE annual_yield
+SET JNJ = 0.9897
+WHERE YEAR=2023;
+
+-- DUMMY DATA 삭제
+ALTER TABLE annual_yield DROP DUM;
+
+-- 국내주식 COLUMN명 수정(assets 테이블에서 code_ticker 내용 수정함에 따른 것)
+/*ALTER TABLE annual_yield
+RENAME COLUMN 373220KR to LG에너지솔루션;*/
+-- ----------------------------------------------------------------------
+-- ----------------------------------------------------------------------
+
+
+-- ----------------------------------------------------------------------
+--                             < stats >
+-- ----------------------------------------------------------------------
+-- 테이블 생성(stats) : 포트폴리오 구성에 필요한 계산값 저장 
+CREATE TABLE stats (
+	code_ticker    VARCHAR(10),
+    Annual_AVG     DECIMAL(5,4) DEFAULT 1,  -- Annual_AVG(연평균 수익률)
+    STDEV          DECIMAL(5,4) DEFAULT 1,  -- STDEV(표준편차)
+    Adj_Annual_AVG DECIMAL(5,4) DEFAULT 1,  -- Adj_Annul_AVG(조정 연평균 수익률)
+    Market_Cap     BIGINT(15),              -- Market_Capital(시가 총액)
+    FOREIGN KEY(code_ticker) REFERENCES assets(code_ticker) ON UPDATE CASCADE
+);
+/*  Annual_AVG(연평균 수익률)          =>  기하평균으로 계산
+    STDEV(표준편차)                   =>  population standard deviation으로 계산
+    Adj_Annual_AVG(조정 연평균 수익률)  =>  Annual_AVG * (1 - STDEV/Annual_AVG)
+    Market_Cap(시가 총액)             =>  한국 주식 달러로 계산(고정환율 적용, USD/KRW=1,300원)  */
+
+-- code_ticker Column에 종목 등록
+INSERT INTO stats(code_ticker) VALUES ("XOM");
+
+-- Annual_AVG(연평균 수익률) 입력
+UPDATE stats
+SET Annual_AVG
+=(
+SELECT
+(
+((SELECT EXP(AVG(LN(LG화학))) FROM annual_yield WHERE year < (SELECT MAX(year) FROM annual_yield))*((COUNT(LG화학)-1)/COUNT(LG화학)))
++((SELECT LG화학 FROM annual_yield WHERE year>=ALL(SELECT year FROM annual_yield))*(1/COUNT(LG화학))))
+FROM annual_yield
+WHERE LG화학 IS NOT NULL
+)
+WHERE code_ticker="LG화학";
+/* Annual_AVG(연평균 수익률) 설명
+   (a-1) 현재 진행 중인 연도(2023)의 컬럼을 제거한 데이터(2012~2022, 11개의 컬럼)의 기하평균
+         SELECT EXP(AVG(LN(AAPL))) FROM annual_yield WHERE year < (SELECT MAX(year) FROM annual_yield);
+   (a-2) 전체 연도에서 가장 최근 연도(2023)의 컬럼을 제거한 데이터의 갯수(전체 12개 중 11개의 컬럼, 11/12)
+         SELECT ((COUNT(AAPL)-1)/COUNT(AAPL)) FROM annual_yield;
+     (a) 가장 최근 연도의 컬럼을 제거한 데이터의 기하평균 x ((전체-가장 최근 연도)/전체)
+         SELECT  (SELECT EXP(AVG(LN(AAPL))) FROM annual_yield WHERE year < (SELECT MAX(year) FROM annual_yield))*((COUNT(AAPL)-1)/COUNT(AAPL))  FROM annual_yield;
+   (b-1) 가장 최근 연도(2023)의 컬럼
+         SELECT AAPL FROM annual_yield WHERE year>=ALL(SELECT year FROM annual_yield); 
+     (b) 가장 최근(현재 진행 중) 연도(2023) 데이터 x (1/11)
+         SELECT  (SELECT AAPL FROM annual_yield WHERE year>=ALL(SELECT year FROM annual_yield))*(1/COUNT(AAPL))  FROM annual_yield;
+ (a)+(b) => 12년 간의 연평균 수익률 
+			* 가장 최근 연도의 데이터를 분리하여 계산하는 이유 => 아직 그 값이 고정되지 않았고, 그렇기에 언제든 그 값이 달라질 수 있음. 이에 따른 계산에 미치는 영향을 최소화하기 위함
+*/
+
+-- STDEV(표준편차) 입력
+UPDATE stats
+SET STDEV
+=(
+SELECT FORMAT(STDDEV_POP(LG에너지솔루션),4) FROM annual_yield
+)
+WHERE code_ticker="LG에너지솔루션";
+
+-- Adj_Annual_AVG(조정 연평균 수익률) 입력
+UPDATE stats
+SET Adj_Annual_AVG
+=(
+SELECT 1+(Annual_AVG-1)*(1-STDEV/Annual_AVG) WHERE code_ticker="LG화학"
+)
+WHERE code_ticker="LG화학";
+/* Adj_Annual_AVG(조정 연평균 수익률) 설명
+   " Adj_Annual_AVG = 1 + (Annual_AVG - 1) * (1 - STDEV/Annual_AVG) "
+   표준편차는 각 측정값과 평균의 차이를 측정하여 해당 자료의 산포도를 나타낸 값이다.
+   그렇기에 위의 계산식은 
+   일정 기간 동안의 연평균 수익률에서 동일 기간 동안의 표준편차만큼의 비중을 제거함으로써
+   연평균 수익률을 보다 보수적으로 바라보는 접근 방식이다. 
+*/
+
+-- Market_Cap(시가총액) 입력(단위 : $)
+-- 23.01.19 기준 (Yahoo Finance, 네이버 증권)
+-- 한국 주식도 달러로 계산 (고정환율 적용 - USD/KRW=1,300원) 
+-- => (원화 단위 주가)/1,300
+-- ETF의 경우(Net Assets) 입력
+/* 단위 
+T : 1000000000000
+B : 1000000000 */
+UPDATE stats
+SET Market_Cap=(26.0243*1000000000000)
+WHERE code_ticker="기아";
+-- 국내 주식 달러로 가격 전환(국내 가격 / 1300)
+UPDATE stats, assets
+SET stats.Market_Cap = (stats.Market_Cap/1300)
+WHERE stats.code_ticker = assets.code_ticker AND assets.country="KOREA";
+
+-- ----------------------------------------------------------------------
+-- ----------------------------------------------------------------------
+
+
+-- ----------------------------------------------------------------------
+--                      < 포트폴리오 가중방식 > - DAO
+-- ----------------------------------------------------------------------
+-- 동일 가중평균 방식 쿼리문
+   SELECT stats.code_ticker, assets.name, stats.Annual_AVG 
+   FROM stats, assets 
+   WHERE stats.code_ticker=assets.code_ticker 
+   AND stats.code_ticker IN ('선택한 종목들의 code_ticker');
+/* 동일 가중평균 방식에서 투자 비중은 => 100/(전체 종목 수) */
+
+-- 시가총액 가중평균 방식 쿼리문
+   SELECT stats.code_ticker,
+		  assets.name, 
+		  stats.Annual_AVG, 
+          (Market_Cap/(SELECT SUM(Market_Cap) FROM stats WHERE stats.code_ticker IN ('AAPL', 'GOOGL', 'MSFT'))) AS proportion
+   FROM stats, assets
+   WHERE stats.code_ticker=assets.code_ticker
+   AND stats.code_ticker
+   IN ('AAPL', 'GOOGL', 'MSFT');
+
+
+SELECT * FROM assets;
+SELECT * FROM annual_yield;
+SELECT * FROM stats;
+
+/*  투자비중 계산 및 업데이트
+UPDATE portfolio
+SET weight =
+( ((SELECT AVG(stdev) FROM stats) + ( (SELECT AVG(stdev) FROM stats) - (SELECT stdev FROM stats WHERE ticker="GLD") )) / ( SELECT SUM(stdev) FROM stats ) )
+WHERE TICKER="GLD";
+-- (표준편차를 통한 투자비중 조정 계수)*(전 종목 동일비중 투자시 비중(분배))
+-- 표준편차를 통한 투자비중 조정 계수
+-- ( 전체의 평균 + ( 전체의 평균 - 개별 종목의 표준편차 ) ) / (전체의 총합)
+-- =>  만약 개별 종목의 표준편차(위험도)가 크다면, 그 투자비중이 위 계산에 따라 감소하게 되고
+--     만약 개별 종목의 표준편차(위험도)가 작다면, 그 투자비중이 위 계산에 따라 증가하게 됨
+*/
+/* 투자 비중에 따른 수익률, SUM()은 포트폴리오 전체의 기대수익률이 됨
+UPDATE portfolio
+SET Expected_AVGAR = 
+( ((SELECT Adjusted_AVGAR FROM stats WHERE TICKER="NKE")-1) * (SELECT weight WHERE TICKER="NKE") )
+WHERE TICKER="NKE";
+*/

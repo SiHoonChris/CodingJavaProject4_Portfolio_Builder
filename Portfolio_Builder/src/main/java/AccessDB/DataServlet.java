@@ -52,7 +52,7 @@ public class DataServlet extends HttpServlet {
 			dispatcher.forward(request, response);
 		}
 		
-		else if(Method.equals("cwi")) {
+		else if(Method.equals("cwi")) { // cwi방식 구현 완료
 			DataDAO dao = new DataDAO();
 			String html_txt = dao.CapitalizationWeightIndex(Assets);
 			request.setAttribute("html_txt", html_txt);

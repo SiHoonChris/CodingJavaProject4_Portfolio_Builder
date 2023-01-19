@@ -97,10 +97,10 @@ public class DataDAO {
 			
 			String query
 			= "SELECT stats.code_ticker, assets.name, stats.Annual_AVG "
-			  + "FROM stats, assets "
-			  + "WHERE stats.code_ticker=assets.code_ticker "
-			  + "AND stats.code_ticker IN ("
-			  + forQuery+"); ";
+			+ "FROM stats, assets "
+			+ "WHERE stats.code_ticker=assets.code_ticker "
+			+ "AND stats.code_ticker IN ("
+			+ forQuery+"); ";
 			
 			pstmt = conn.prepareStatement(query);
 			rs = pstmt.executeQuery();
@@ -131,8 +131,6 @@ public class DataDAO {
 			e.printStackTrace();
 		}
 		
-		System.out.println(tableComponent);
-		
 		return tableComponent;
 	} // public String EqualWeightIndex()
 	
@@ -140,7 +138,52 @@ public class DataDAO {
 	// 3. 시가총액 가중방식 구현
 	// ----------------------------------------	
 	public String CapitalizationWeightIndex(String forQuery) {
+		List<DataDTO> statsForTable = new ArrayList<DataDTO>();
 		String tableComponent="";
+		
+		try {
+			conn = dataFactory.getConnection();
+			
+			String query 
+			= "SELECT stats.code_ticker, "
+			+ "       assets.name, "
+			+ "       stats.Annual_AVG, "
+			+ "       (Market_Cap/(SELECT SUM(Market_Cap) FROM stats WHERE stats.code_ticker IN ("+forQuery+"))) AS proportion "
+			+ "FROM stats, assets "
+			+ "WHERE stats.code_ticker=assets.code_ticker "
+			+ "      AND stats.code_ticker "
+			+ "      IN ("+forQuery+"); ";
+			
+			pstmt=conn.prepareStatement(query);
+			rs=pstmt.executeQuery();
+			
+			while(rs.next()) {
+				DataDTO dto = new DataDTO();
+				dto.setCode_ticker(rs.getString("code_ticker"));
+				dto.setName(rs.getString("name"));
+				dto.setAvg_yield(rs.getFloat("Annual_AVG"));
+				dto.setProportion(rs.getFloat("proportion"));
+				statsForTable.add(dto);
+			}
+			
+			for(int i=0; i<statsForTable.size(); i++) {
+				tableComponent += "<tr>";
+				tableComponent += "<td id='No'>"+(i+1)+"</td>";
+				tableComponent += "<td id='CodeTicker'>"+statsForTable.get(i).code_ticker+"</td>";
+				tableComponent += "<td id='NameOfStock'>"+statsForTable.get(i).name+"</td>";
+				tableComponent += "<td id='YieldRate'>"+statsForTable.get(i).avg_yield+"%</td>";
+				tableComponent += "<td id='Porportion'>"+statsForTable.get(i).proportion+"%</td>";
+				tableComponent += "</tr>";
+			}
+			
+			rs.close();
+			pstmt.close();
+			conn.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 		return tableComponent;
 	} // public String CapitalizationWeightIndex()
 	
