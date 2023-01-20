@@ -177,7 +177,6 @@ WHERE code_ticker="기아";
 UPDATE stats, assets
 SET stats.Market_Cap = (stats.Market_Cap/1300)
 WHERE stats.code_ticker = assets.code_ticker AND assets.country="KOREA";
-
 -- ----------------------------------------------------------------------
 -- ----------------------------------------------------------------------
 
@@ -185,14 +184,18 @@ WHERE stats.code_ticker = assets.code_ticker AND assets.country="KOREA";
 -- ----------------------------------------------------------------------
 --                      < 포트폴리오 가중방식 > - DAO
 -- ----------------------------------------------------------------------
--- 동일 가중평균 방식 쿼리문
-   SELECT stats.code_ticker, assets.name, stats.Annual_AVG 
+-- 1) 동일 가중평균 방식 쿼리문
+   SELECT stats.code_ticker , 
+          assets.name , 
+		  stats.Annual_AVG , 
+          ( 1/(SELECT COUNT(code_ticker) FROM stats WHERE code_ticker IN ('AAPL', 'GOOGL')) ) AS proportion
    FROM stats, assets 
    WHERE stats.code_ticker=assets.code_ticker 
-   AND stats.code_ticker IN ('선택한 종목들의 code_ticker');
+   AND stats.code_ticker IN ('AAPL', 'GOOGL');
 /* 동일 가중평균 방식에서 투자 비중은 => 100/(전체 종목 수) */
 
--- 시가총액 가중평균 방식 쿼리문
+
+-- 2) 시가총액 가중평균 방식 쿼리문
    SELECT stats.code_ticker,
 		  assets.name, 
 		  stats.Annual_AVG, 
@@ -203,24 +206,41 @@ WHERE stats.code_ticker = assets.code_ticker AND assets.country="KOREA";
    IN ('AAPL', 'GOOGL', 'MSFT');
 
 
-SELECT * FROM assets;
-SELECT * FROM annual_yield;
-SELECT * FROM stats;
-
-/*  투자비중 계산 및 업데이트
-UPDATE portfolio
-SET weight =
-( ((SELECT AVG(stdev) FROM stats) + ( (SELECT AVG(stdev) FROM stats) - (SELECT stdev FROM stats WHERE ticker="GLD") )) / ( SELECT SUM(stdev) FROM stats ) )
-WHERE TICKER="GLD";
--- (표준편차를 통한 투자비중 조정 계수)*(전 종목 동일비중 투자시 비중(분배))
--- 표준편차를 통한 투자비중 조정 계수
--- ( 전체의 평균 + ( 전체의 평균 - 개별 종목의 표준편차 ) ) / (전체의 총합)
--- =>  만약 개별 종목의 표준편차(위험도)가 크다면, 그 투자비중이 위 계산에 따라 감소하게 되고
---     만약 개별 종목의 표준편차(위험도)가 작다면, 그 투자비중이 위 계산에 따라 증가하게 됨
-*/
-/* 투자 비중에 따른 수익률, SUM()은 포트폴리오 전체의 기대수익률이 됨
-UPDATE portfolio
-SET Expected_AVGAR = 
-( ((SELECT Adjusted_AVGAR FROM stats WHERE TICKER="NKE")-1) * (SELECT weight WHERE TICKER="NKE") )
-WHERE TICKER="NKE";
-*/
+-- 3) SiHoonChris 가중평균 방식 쿼리문
+SELECT stats.code_ticker, assets.name, stats.Adj_Annual_AVG, 
+       IFNULL(
+	   (
+		 (
+		   ( (SELECT AVG(STDEV) FROM stats WHERE stats.code_ticker IN ('AAPL', 'GOOGL', 'JNJ', 'TSLA', '삼성전자') AND STDEV < 2*(SELECT AVG(STDEV) FROM stats) )
+			  + ( (SELECT AVG(STDEV) FROM stats WHERE stats.code_ticker IN ('AAPL', 'GOOGL', 'JNJ', 'TSLA', '삼성전자') AND STDEV < 2*(SELECT AVG(STDEV) FROM stats) )
+                   - (SELECT STDEV FROM stats WHERE stats.code_ticker=assets.code_ticker AND STDEV < 2*(SELECT AVG(STDEV) FROM stats) )
+				)
+		   ) / (SELECT AVG(STDEV) FROM stats WHERE stats.code_ticker IN ('AAPL', 'GOOGL', 'JNJ', 'TSLA', '삼성전자') AND STDEV < 2*(SELECT AVG(STDEV) FROM stats) )
+		 ) 
+         *
+         ( 1 / 
+           ( SELECT COUNT(code_ticker) FROM stats WHERE stats.code_ticker IN ('AAPL', 'GOOGL', 'JNJ', 'TSLA', '삼성전자') AND STDEV < 2*(SELECT AVG(STDEV) FROM stats) )
+		 )
+       ), 0) AS proportion
+FROM stats, assets
+WHERE stats.code_ticker=assets.code_ticker
+AND stats.code_ticker
+IN ('AAPL', 'GOOGL', 'JNJ', 'TSLA', '삼성전자');
+/*  투자 비중
+    SiHoonChris 가중 방식에서는 표준편차를 Risk로써 다룬다. 그렇기에,
+    개별 종목의 표준편차(STDEV)가 크다면, 그 투자 비중은 감소하게 되고
+    개별 종목의 표준편차(STDEV)가 작다면, 그 투자 비중이 증가하게 된다.
+    
+    아래의 계산식은 이러한 개념을 바탕으로 투자비중 계수를 구현한 것이며
+	  (투자비중 계수, 이하 C)
+        = ( (전체 종목에 대한 평균 SDTEV) + ((전체 종목에 대한 평균 STDEV)-(개별 종목에 대한 평균 STDEV)) ) / (전체 종목에 대한 평균 STDEV)
+		  쿼리문 구현 예시 : 
+		  ( (SELECT AVG(STDEV) FROM stats) + ((SELECT AVG(STDEV) FROM stats)-(SELECT STDEV FROM stats WHERE code_ticker="종목명")) ) / (SELECT AVG(STDEV) FROM stats)
+	이렇게 정의된 계수를 동일 비중에 대하여 곱해주면 그 투자 비중이 SiHoonChris 가중방식에 맞게 재조정된다
+	  (투자 비중) = C * (1 / 전체 종목의 수)    */
+/* 조정 연평균 수익률(Adj_Annual_AVG) => SiHoonChris 가중방식에서는 조정 연평균 수익률을 사용한다. */
+/*  예외 상황 처리
+    "(개별 종목에 대한 평균 STDEV) >= 2*(종목 전체에 대한 평균 STDEV)" 인 경우
+    다시 말해, 투자비중 계수 계산식에서 분자가 0 또는 음수가 되는 경우. 예를 들어,
+    TSLA의 경우 STDEV가 2.1618로, SiHoonChris 가중방식에서 투자 비중을 계산했을 시 음의 값이 나온다.
+    이러한 경우 해당 종목의 수익률(Annual_AVG, Adj_Annual_AVG)에 상관없이 투자하지 않는다.(해당 종목의 투자 비중은 0이 된다.)  */

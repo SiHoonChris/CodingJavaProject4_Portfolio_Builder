@@ -96,11 +96,13 @@ public class DataDAO {
 			conn = dataFactory.getConnection();
 			
 			String query
-			= "SELECT stats.code_ticker, assets.name, stats.Annual_AVG "
+			= "SELECT stats.code_ticker , "
+			+ "       assets.name , "
+			+ "		  stats.Annual_AVG , "
+			+ "       ( 1/(SELECT COUNT(code_ticker) FROM stats WHERE code_ticker IN ("+forQuery+")) ) AS proportion "
 			+ "FROM stats, assets "
 			+ "WHERE stats.code_ticker=assets.code_ticker "
-			+ "AND stats.code_ticker IN ("
-			+ forQuery+"); ";
+			+ "      AND stats.code_ticker IN ("+forQuery+");";
 			
 			pstmt = conn.prepareStatement(query);
 			rs = pstmt.executeQuery();
@@ -110,6 +112,7 @@ public class DataDAO {
 				dto.setCode_ticker(rs.getString("code_ticker"));
 				dto.setName(rs.getString("name"));
 				dto.setAvg_yield(rs.getFloat("Annual_AVG"));
+				dto.setProportion(rs.getFloat("proportion"));
 				statsForTable.add(dto);
 			}
 			
@@ -119,7 +122,7 @@ public class DataDAO {
 				tableComponent += "<td id='CodeTicker'>"+statsForTable.get(i).code_ticker+"</td>";
 				tableComponent += "<td id='NameOfStock'>"+statsForTable.get(i).name+"</td>";
 				tableComponent += "<td id='YieldRate'>"+statsForTable.get(i).avg_yield+"%</td>";
-				tableComponent += "<td id='Porportion'>"+String.format("%.2f", ((1/(float)(statsForTable.size()))*100))+"%</td>";
+				tableComponent += "<td id='Porportion'>"+statsForTable.get(i).proportion+"%</td>";
 				tableComponent += "</tr>";
 			}
 			
@@ -188,10 +191,66 @@ public class DataDAO {
 	} // public String CapitalizationWeightIndex()
 	
 	// ----------------------------------------
-	// 4. SiHoonChris 가중방식 구현
+	// 4. SiHoonChris 가중방식 구현  *TSLA처럼 투자비중이 음수이면 어떻게 처리하지??
 	// ----------------------------------------	
 	public String SihoonChrisWeightIndex(String forQuery) {
+		List<DataDTO> statsForTable = new ArrayList<DataDTO>();
 		String tableComponent="";
+		
+		try {
+			conn = dataFactory.getConnection();
+			
+			String query 
+			= "SELECT stats.code_ticker, assets.name, stats.Adj_Annual_AVG, "
+			+ "       IFNULL( "
+			+ "	      ( "
+			+ "		    ( "
+			+ "		      ( (SELECT AVG(STDEV) FROM stats WHERE stats.code_ticker IN ("+forQuery+") AND STDEV < 2*(SELECT AVG(STDEV) FROM stats)) "
+			+ "			     + ( (SELECT AVG(STDEV) FROM stats WHERE stats.code_ticker IN ("+forQuery+") AND STDEV < 2*(SELECT AVG(STDEV) FROM stats)) "
+			+ "                    - (SELECT STDEV FROM stats WHERE stats.code_ticker=assets.code_ticker AND STDEV < 2*(SELECT AVG(STDEV) FROM stats)) "
+			+ "				   ) "
+			+ "	  	      ) / ( SELECT AVG(STDEV) FROM stats WHERE stats.code_ticker IN ("+forQuery+") AND STDEV < 2*(SELECT AVG(STDEV) FROM stats) ) "
+			+ "		    ) "
+			+ "         * "
+			+ "         ( 1 / "
+			+ "           ( SELECT COUNT(code_ticker) FROM stats WHERE stats.code_ticker IN ("+forQuery+") AND STDEV < 2*(SELECT AVG(STDEV) FROM stats) ) "
+			+ "		    ) "
+			+ "       ), 0 ) AS proportion "
+			+ "FROM stats, assets "
+			+ "WHERE stats.code_ticker=assets.code_ticker "
+			+ "AND stats.code_ticker "
+			+ "IN ("+forQuery+"); ";
+			
+			pstmt=conn.prepareStatement(query);
+			rs=pstmt.executeQuery();
+			
+			while(rs.next()) {
+				DataDTO dto = new DataDTO();
+				dto.setCode_ticker(rs.getString("code_ticker"));
+				dto.setName(rs.getString("name"));
+				dto.setAvg_yield(rs.getFloat("Adj_Annual_AVG"));
+				dto.setProportion(rs.getFloat("proportion"));
+				statsForTable.add(dto);
+			}
+			
+			for(int i=0; i<statsForTable.size(); i++) {
+				tableComponent += "<tr>";
+				tableComponent += "<td id='No'>"+(i+1)+"</td>";
+				tableComponent += "<td id='CodeTicker'>"+statsForTable.get(i).code_ticker+"</td>";
+				tableComponent += "<td id='NameOfStock'>"+statsForTable.get(i).name+"</td>";
+				tableComponent += "<td id='YieldRate'>"+statsForTable.get(i).avg_yield+"%</td>";
+				tableComponent += "<td id='Porportion'>"+statsForTable.get(i).proportion+"%</td>";
+				tableComponent += "</tr>";
+			}
+			
+			rs.close();
+			pstmt.close();
+			conn.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 		return tableComponent;
 	} // public String SihoonChrisWeightIndex()
 	
