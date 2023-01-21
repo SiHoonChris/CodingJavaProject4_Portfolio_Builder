@@ -64,7 +64,7 @@ public class DataServlet extends HttpServlet {
 		
 		else if(Method.equals("shcwi")) { // shcwi방식 구현 완료(80%)
 			DataDAO dao = new DataDAO();
-			String html_txt = dao.SihoonChrisWeightIndex(Assets);
+			String html_txt = dao.SiHoonChrisWeightIndex(Assets);
 			request.setAttribute("html_txt", html_txt);
 			
 			RequestDispatcher dispatcher

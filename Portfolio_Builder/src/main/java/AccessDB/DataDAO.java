@@ -102,7 +102,7 @@ public class DataDAO {
 			+ "       ( 1/(SELECT COUNT(code_ticker) FROM stats WHERE code_ticker IN ("+forQuery+")) ) AS proportion "
 			+ "FROM stats, assets "
 			+ "WHERE stats.code_ticker=assets.code_ticker "
-			+ "      AND stats.code_ticker IN ("+forQuery+");";
+			+ "      AND stats.code_ticker IN ("+forQuery+"); ";
 			
 			pstmt = conn.prepareStatement(query);
 			rs = pstmt.executeQuery();
@@ -155,7 +155,8 @@ public class DataDAO {
 			+ "FROM stats, assets "
 			+ "WHERE stats.code_ticker=assets.code_ticker "
 			+ "      AND stats.code_ticker "
-			+ "      IN ("+forQuery+"); ";
+			+ "      IN ("+forQuery+") "
+			+ "ORDER BY proportion DESC; ";
 			
 			pstmt=conn.prepareStatement(query);
 			rs=pstmt.executeQuery();
@@ -193,7 +194,7 @@ public class DataDAO {
 	// ----------------------------------------
 	// 4. SiHoonChris 가중방식 구현  *TSLA처럼 투자비중이 음수이면 어떻게 처리하지??
 	// ----------------------------------------	
-	public String SihoonChrisWeightIndex(String forQuery) {
+	public String SiHoonChrisWeightIndex(String forQuery) {
 		List<DataDTO> statsForTable = new ArrayList<DataDTO>();
 		String tableComponent="";
 		
@@ -219,7 +220,8 @@ public class DataDAO {
 			+ "FROM stats, assets "
 			+ "WHERE stats.code_ticker=assets.code_ticker "
 			+ "AND stats.code_ticker "
-			+ "IN ("+forQuery+"); ";
+			+ "IN ("+forQuery+") "
+			+ "ORDER BY proportion DESC; ";
 			
 			pstmt=conn.prepareStatement(query);
 			rs=pstmt.executeQuery();

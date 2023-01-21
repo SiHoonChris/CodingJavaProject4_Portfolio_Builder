@@ -11,7 +11,7 @@ String html = (String)request.getAttribute("html_txt");
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width" initial-scale="1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Build your Portfolio!</title>
 		<!-- <link rel="stylesheet" type='text/css' href='PortfolioBuilder.css'> -->
 		<style>
@@ -230,10 +230,10 @@ String html = (String)request.getAttribute("html_txt");
 		/* (Bottom-Left) 포트폴리오 구성 방법 선택 ------------------------------------- */
 			
 		/* (Bottom-Right) 포트폴리오 구성 비중 원차트 ----------------------------------- */
-			.BR {
-		 		grid-area: d;
-		 		border: 1px solid black;
-			}
+			.BR {grid-area: d;}
+			
+			#canvas {border: 1px black solid;}
+		/* (Bottom-Right) 포트폴리오 구성 비중 원차트 ----------------------------------- */
 		</style>
 	</head>
 	<body>
@@ -345,181 +345,222 @@ String html = (String)request.getAttribute("html_txt");
   			</div>
 <!-- TR 파트 -->
 <!-- BR 파트 -->
- 			<div id="chart" class="BR">
-  				도넛모양 차트
-  			</div>
+ 			<canvas width="600px" height="414px" class="BR" id='canvas'></canvas>
   		</div>
 <!-- BR 파트 -->
 		<!-- <script src="PortfolioBuilder.js"></script> -->
 		<script>
-		// TL-1) 종목명 보여주기
-		let total_num = document.getElementById("Total").innerHTML;
-		total_num = total_num.substring(6);
+			// TL-1) 종목명 보여주기
+			let total_num = document.getElementById("Total").innerHTML;
+			total_num = total_num.substring(6);
+					
+			for(var i=1 ; i < parseInt(total_num,10) ; i++){
+				let id="list-no"+i;
+				let asset = document.getElementById(id);
+				asset.addEventListener("mouseover", assetMouseOver);
+				asset.addEventListener("mouseout", assetMouseOut);
+			}
+	
+			function assetMouseOver(){ // 종목 코드/티커에 마우스 올리면 풀네임 보여줌
+				document.getElementById("full-name").innerHTML
+				= document.getElementById(event.srcElement.id).getAttribute("name");
+			}
+			function assetMouseOut(){ // 마우스가 나가면 기본 문자열 보여줌
+				document.getElementById("full-name").innerHTML="종목명 상세";
+			}
+	
+			// TL-2~5) 종목 선택 관련 작업 (버튼 실행)
+			let checkedValue_add = [];    // 선택한 종목들을 checkedValue_add에 담고, add_assets()가 실행되면 selectedAssets로 옮김
+			let checkedValue_remove = []; // 선택한 종목들을 checkedValue_remove에 담고, remove_assets()가 실행되면 selectedAssets로 옮김
+			let selectedAssets=[];  // 종목 선택에 대한 종합적인 결과를 출력하는 배열
+			const map = new Map();  // 4-1)에서 사용 : key는 종목명, value는 그 종목의 위치(배열 안)
+			let assetName="";
+					
+			// TL-2) 버튼 공통 적용
+			function aft_buttonClicked() {
+				// 포트폴리오 안에 담긴 종목 수 표시
+				document.getElementById("number_selec").innerHTML = "&nbsp;("+selectedAssets.length+")";
+				// 버튼 실행 후 전체 체크박스에 체크 해제
+				const checkedBox = document.getElementsByName("TL_checkbox");
+				for(var i=0; i<checkedBox.length; i++){
+					if(checkedBox[i].checked==true) checkedBox[i].checked=false;
+				}
+				checkedValue_add=[];
+				checkedValue_remove=[];
+			}
 				
-		for(var i=1 ; i < parseInt(total_num,10) ; i++){
-			let id="list-no"+i;
-			let asset = document.getElementById(id);
-			asset.addEventListener("mouseover", assetMouseOver);
-			asset.addEventListener("mouseout", assetMouseOut);
-		}
-
-		function assetMouseOver(){ // 종목 코드/티커에 마우스 올리면 풀네임 보여줌
-			document.getElementById("full-name").innerHTML
-			= document.getElementById(event.srcElement.id).getAttribute("name");
-		}
-		function assetMouseOut(){ // 마우스가 나가면 기본 문자열 보여줌
-			document.getElementById("full-name").innerHTML="종목명 상세";
-		}
-
-		// TL-2~5) 종목 선택 관련 작업 (버튼 실행)
-		let checkedValue_add = [];    // 선택한 종목들을 checkedValue_add에 담고, add_assets()가 실행되면 selectedAssets로 옮김
-		let checkedValue_remove = []; // 선택한 종목들을 checkedValue_remove에 담고, remove_assets()가 실행되면 selectedAssets로 옮김
-		let selectedAssets=[];  // 종목 선택에 대한 종합적인 결과를 출력하는 배열
-		const map = new Map();  // 4-1)에서 사용 : key는 종목명, value는 그 종목의 위치(배열 안)
-		let assetName="";
-				
-		// TL-2) 버튼 공통 적용
-		function aft_buttonClicked() {
-			// 포트폴리오 안에 담긴 종목 수 표시
-			document.getElementById("number_selec").innerHTML = "&nbsp;("+selectedAssets.length+")";
-			// 버튼 실행 후 전체 체크박스에 체크 해제
-			const checkedBox = document.getElementsByName("TL_checkbox");
-			for(var i=0; i<checkedBox.length; i++){
-				if(checkedBox[i].checked==true) checkedBox[i].checked=false;
-			}
-			checkedValue_add=[];
-			checkedValue_remove=[];
-		}
-			
-		// TL-3-1) 추가 : 체크된 항목들을 checkedValue배열에 담기
-		function getCheckboxValue(event) {				
-			if(event.target.checked==true) {
-				let name = event.target.id;
-				checkedValue_add.push(name);
-				console.log(checkedValue_add);
-			}
-			else if(event.target.checked==false) {
-				let index = checkedValue_add.indexOf(event.target.id);
-				checkedValue_add.splice(index, 1);
-				console.log(checkedValue_add);
-			}
-		}
-		// TL-3-2) 추가 : 선택된 종목들 포트폴리오에 추가()
-		function add_assets() {
-			selectedAssets = selectedAssets.concat(checkedValue_add);
-			selectedAssets = [...new Set(selectedAssets)];
-			checkedValue_add=[];
-			
-			assetName="<tbody>";
-			for(var i=0; i<selectedAssets.length; i++){
-				assetName += '<tr><td>';
-				assetName += '<input type="checkbox" name="composition" value="'+selectedAssets[i]+'" ';
-				assetName += 'onclick="remove_in_array(event)" /> ';
-				assetName += selectedAssets[i];
-				assetName += '</td></tr>';
-			}
-			assetName += "</tbody>";
-			document.getElementById("selected").innerHTML = assetName;
-			
-			aft_buttonClicked();
-		}
-
-		// TL-4-1) 제거 : selectedAssets 배열에서 선택된 항목 제거
-		function remove_in_array(event) {
-			if(event.target.checked==true) {
-				let name = event.target.value;
-				checkedValue_remove.push(name);
-				console.log(checkedValue_remove);
-			}
-			else if(event.target.checked==false) {
-				let index = checkedValue_remove.indexOf(event.target.value);
-				checkedValue_remove.splice(index, 1);
-				console.log(checkedValue_remove);
-			}
-		}
-		// TL-4-2) 제거 : 포트폴리오 내의 선택된 종목만 제거
-		function remove_assets() {
-			for(var i=0; i<checkedValue_remove.length; i++){
-				for(var j=0; j<selectedAssets.length; j++){
-					if(checkedValue_remove[i]==selectedAssets[j]){
-						selectedAssets.splice(j, 1);
-					}	
+			// TL-3-1) 추가 : 체크된 항목들을 checkedValue배열에 담기
+			function getCheckboxValue(event) {				
+				if(event.target.checked==true) {
+					let name = event.target.id;
+					checkedValue_add.push(name);
+					console.log(checkedValue_add);
+				}
+				else if(event.target.checked==false) {
+					let index = checkedValue_add.indexOf(event.target.id);
+					checkedValue_add.splice(index, 1);
+					console.log(checkedValue_add);
 				}
 			}
-			checkedValue_remove=[];
-
-			assetName="<tbody>";
-			for(var i=0; i<selectedAssets.length; i++){
-				assetName += '<tr><td>';
-				assetName += '<input type="checkbox" name="composition" value="'+selectedAssets[i]+'" ';
-				assetName += 'onclick="remove_in_array(event)" /> ';
-				assetName += selectedAssets[i];
-				assetName += '</td></tr>';
-			}
-			assetName += "</tbody>";
-			document.getElementById("selected").innerHTML = assetName;
-			
-			aft_buttonClicked();
-		}
-
-		// TL-5) 초기화 : 포트폴리오 안에 추가된 전체 종목 삭제
-		function reset_assets() {
-			if(confirm("선택된 종목 전체가 삭제됩니다.")) {
-				selectedAssets=[];
+			// TL-3-2) 추가 : 선택된 종목들 포트폴리오에 추가()
+			function add_assets() {
+				selectedAssets = selectedAssets.concat(checkedValue_add);
+				selectedAssets = [...new Set(selectedAssets)];
+				checkedValue_add=[];
 				
-				assetName = "<tbody></tbody>";
+				assetName="<tbody>";
+				for(var i=0; i<selectedAssets.length; i++){
+					assetName += '<tr><td>';
+					assetName += '<input type="checkbox" name="composition" value="'+selectedAssets[i]+'" ';
+					assetName += 'onclick="remove_in_array(event)" /> ';
+					assetName += selectedAssets[i];
+					assetName += '</td></tr>';
+				}
+				assetName += "</tbody>";
 				document.getElementById("selected").innerHTML = assetName;
 				
 				aft_buttonClicked();
 			}
-		}		
-
-
-		// BL-1) 포트폴리오 가중 방식에 대한 설명을 보여준다
-		let method = document.querySelector("#p_method");
-		let expl   = document.querySelector("#p_expl");
-			
-		function select_method(event) {
-			let title;
-			let explanation;
-
-			switch(event.target.id) {
-			case 'ewi':
-				title="동일 가중방식";
-				explanation = "모든 구성 종목에 동일한 비중으로 투자한다. 중소형주의 주가변화가 상대적으로 높게 반영된다.";
-				break;
-			case 'cwi':
-				title="시가총액 가중방식";
-				explanation = "시가총액에 비례하여 구성 종목의 투자 비중을 설정한다. 대형주의 주가변화가 상대적으로 높게 반영된다.";
-				break;
-			case 'shcwi':
-				title="SiHoonChris 가중방식";
-				explanation = "SiHoonChris가 Ray Dalio의 Risk-Parity Portfolio 전략에서 파생시킨 가중방식으로, ";
-				explanation +="특정 기간 동안의 연간 수익률이 가지는 표준편차를 기준으로 투자비중을 설정하는 방식이다. ";
-				explanation +="표준편차가 낮을수록 높은 투자비중을 갖게 되며, 기대수익률은 기간 동안의 연평균 수익률에서 ";
-				explanation +="표준편차의 크기에 비례하는 수익률을 감하여 계산한다.";
+	
+			// TL-4-1) 제거 : selectedAssets 배열에서 선택된 항목 제거
+			function remove_in_array(event) {
+				if(event.target.checked==true) {
+					let name = event.target.value;
+					checkedValue_remove.push(name);
+					console.log(checkedValue_remove);
+				}
+				else if(event.target.checked==false) {
+					let index = checkedValue_remove.indexOf(event.target.value);
+					checkedValue_remove.splice(index, 1);
+					console.log(checkedValue_remove);
+				}
 			}
-			method.textContent = title;
-			expl.textContent   = explanation;
-		}
-
-		// BL-2) 실행 버튼 구현
-		function fn_sendDatas(event){
-			let html_string="";
-			for(var i=0; i<selectedAssets.length; i++ ){
-				if(i==selectedAssets.length-1) {html_string += "'"+selectedAssets[i]+"'";}
-				else {html_string += "'"+selectedAssets[i]+"', "};
+			// TL-4-2) 제거 : 포트폴리오 내의 선택된 종목만 제거
+			function remove_assets() {
+				for(var i=0; i<checkedValue_remove.length; i++){
+					for(var j=0; j<selectedAssets.length; j++){
+						if(checkedValue_remove[i]==selectedAssets[j]){
+							selectedAssets.splice(j, 1);
+						}	
+					}
+				}
+				checkedValue_remove=[];
+	
+				assetName="<tbody>";
+				for(var i=0; i<selectedAssets.length; i++){
+					assetName += '<tr><td>';
+					assetName += '<input type="checkbox" name="composition" value="'+selectedAssets[i]+'" ';
+					assetName += 'onclick="remove_in_array(event)" /> ';
+					assetName += selectedAssets[i];
+					assetName += '</td></tr>';
+				}
+				assetName += "</tbody>";
+				document.getElementById("selected").innerHTML = assetName;
+				
+				aft_buttonClicked();
 			}
-			document.getElementById("nameOfAssets").value = html_string;
-
-			let AssetsAndMethod = document.AssetsAndMethod;
-			let Method = AssetsAndMethod.Method.value;
-			let Assets = AssetsAndMethod.Assets.value;
+	
+			// TL-5) 초기화 : 포트폴리오 안에 추가된 전체 종목 삭제
+			function reset_assets() {
+				if(confirm("선택된 종목 전체가 삭제됩니다.")) {
+					selectedAssets=[];
+					
+					assetName = "<tbody></tbody>";
+					document.getElementById("selected").innerHTML = assetName;
+					
+					aft_buttonClicked();
+				}
+			}		
 			
-			AssetsAndMethod.method="post";
-			AssetsAndMethod.action="/result";
-			AssetsAndMethod.submit();
-		}
+			
+			// BL-1) 포트폴리오 가중 방식에 대한 설명을 보여준다
+			let method = document.querySelector("#p_method");
+			let expl   = document.querySelector("#p_expl");
+				
+			function select_method(event) {
+				let title;
+				let explanation;
+	
+				switch(event.target.id) {
+				case 'ewi':
+					title="동일 가중방식";
+					explanation = "모든 구성 종목에 동일한 비중으로 투자한다. 중소형주의 주가변화가 상대적으로 높게 반영된다.";
+					break;
+				case 'cwi':
+					title="시가총액 가중방식";
+					explanation = "시가총액에 비례하여 구성 종목의 투자 비중을 설정한다. 대형주의 주가변화가 상대적으로 높게 반영된다.";
+					break;
+				case 'shcwi':
+					title="SiHoonChris 가중방식";
+					explanation = "SiHoonChris가 Ray Dalio의 Risk-Parity Portfolio 전략에서 파생시킨 가중방식으로, ";
+					explanation +="특정 기간 동안의 연간 수익률이 가지는 표준편차를 기준으로 투자비중을 설정하는 방식이다. ";
+					explanation +="표준편차가 낮을수록 높은 투자비중을 갖게 되며, 기대수익률은 기간 동안의 연평균 수익률에서 ";
+					explanation +="표준편차의 크기에 비례하는 수익률을 감하여 계산한다.";
+				}
+				method.textContent = title;
+				expl.textContent   = explanation;
+			}
+	
+			// BL-2) 실행 버튼 구현
+			function fn_sendDatas(event){
+				let html_string="";
+				for(var i=0; i<selectedAssets.length; i++ ){
+					if(i==selectedAssets.length-1) {html_string += "'"+selectedAssets[i]+"'";}
+					else {html_string += "'"+selectedAssets[i]+"', "};
+				}
+				document.getElementById("nameOfAssets").value = html_string;
+	
+				let AssetsAndMethod = document.AssetsAndMethod;
+				let Method = AssetsAndMethod.Method.value;
+				let Assets = AssetsAndMethod.Assets.value;
+				
+				AssetsAndMethod.method="post";
+				AssetsAndMethod.action="/result";
+				AssetsAndMethod.submit();
+			}
+			
+			
+			// BR) 원차트(도넛차트) 만들기
+			const canvas = document.getElementById('canvas');
+			const ctx    = canvas.getContext('2d');
+			var   width  = canvas.clientWidth;
+			var   height = canvas.clientHeight;
+			var   value  = [42.13 , 23.28 , 34.59];
+			var   degree = 360;
+			var   radius = 150; // 반지름
+			
+			// sum : 총 합계
+			var sum = value.reduce((a, b) => a+b);
+			// conv_array : 비율(개별 데이터/데이터 총합)들이 담긴 배열
+			var conv_array = value.slice().map((data) => {
+				var rate = data / sum;
+				var myDegree = degree * rate;
+				return myDegree;
+			});
+			
+			degree = 0; // 360 => 0으로 초기화 
+			
+			for(var i=0; i<conv_array.length; i++) {
+				var item = conv_array[i];
+				ctx.save();
+				ctx.beginPath();
+				ctx.moveTo(width/2, height/2);
+				if(i==0){
+					// arc : 호(원)를 그리는 함수(라디안 사용, 1도 × π/180 = 0.01745라디안)
+					// ctx.arc(x좌표, y좌표, 반지름(radius), 시작각(startAngle), 끝각(endAngle), counterClockwise)
+					ctx.arc(width/2, height/2, radius, (Math.PI/180)*0, (Math.PI/180)*item, false);
+					degree = item;
+					console.log(0, degree);
+				}
+				else {
+					ctx.arc(width/2, height/2, radius, (Math.PI/180)*degree, (Math.PI/180)*(degree+item), false);
+					console.log(degree, degree+item);
+					degree = degree + item;
+				}
+				ctx.closePath();
+				ctx.stroke();
+				ctx.restore();
+			}
 		</script>
 	</body>
 </html>

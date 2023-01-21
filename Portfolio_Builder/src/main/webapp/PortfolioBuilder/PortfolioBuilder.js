@@ -174,3 +174,44 @@ function fn_sendDatas(event){
 	AssetsAndMethod.action="/result";
 	AssetsAndMethod.submit();
 }
+
+
+// BR) 원차트(도넛차트) 만들기
+const canvas = document.getElementById('canvas');
+const ctx    = canvas.getContext('2d');
+var   width  = canvas.clientWidth;
+var   height = canvas.clientHeight;
+var   value  = [42.13, 23.28, 34.59];
+var   degree = 360;
+var   radius = 150; // 반지름
+
+var sum = value.reduce((a, b) => a+b); // sum : 총 합계
+var conv_array = value.slice().map((data) => { // conv_array : 비율(개별 데이터/데이터 총합)들이 담긴 배열
+	var rate = data / sum;
+	var myDegree = degree * rate;
+	return myDegree;
+});
+
+degree = 0; // 360에서 0으로 초기화 
+
+for(var i=0; i<conv_array.length; i++) {
+	var item = conv_array[i];
+	ctx.save();
+	ctx.beginPath();
+	ctx.moveTo(width/2, height/2);
+	if(i==0){
+		// arc : 호(원)를 그리는 함수(라디안 사용, 1도 × π/180 = 0.01745라디안)
+		// ctx.arc(x좌표, y좌표, 반지름(radius), 시작각(startAngle), 끝각(endAngle), counterClockwise)
+		ctx.arc(width/2, height/2, radius, (Math.PI/180)*0, (Math.PI/180)*item, false);
+		degree = item;
+		console.log(0, degree);
+	}
+	else {
+		ctx.arc(width/2, height/2, radius, (Math.PI/180)*degree, (Math.PI/180)*(degree+item), false);
+		console.log(degree, degree+item);
+		degree = degree + item;
+	}
+	ctx.closePath();
+	ctx.stroke();
+	ctx.restore();
+}
