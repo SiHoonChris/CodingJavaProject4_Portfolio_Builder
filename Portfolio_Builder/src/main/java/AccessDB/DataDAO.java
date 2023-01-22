@@ -191,37 +191,66 @@ public class DataDAO {
 		return tableComponent;
 	} // public String CapitalizationWeightIndex()
 	
-	// ----------------------------------------
-	// 4. SiHoonChris 가중방식 구현  *TSLA처럼 투자비중이 음수이면 어떻게 처리하지??
-	// ----------------------------------------	
-	public String SiHoonChrisWeightIndex(String forQuery) {
-		List<DataDTO> statsForTable = new ArrayList<DataDTO>();
-		String tableComponent="";
-		
+	// ----------------------------------------------------------------------------------
+	// 4. SiHoonChris 가중방식 구현 - PrepareForSHCWI, ExecuteSHCWI, SiHoonChrisWeightIndex
+	// ----------------------------------------------------------------------------------
+	private void PrepareForSHCWI(String forQuery) {   // SiHoonChris 가중방식을 사용하기 위한 View를 생성한다.		
 		try {
 			conn = dataFactory.getConnection();
 			
-			String query 
-			= "SELECT stats.code_ticker, assets.name, stats.Adj_Annual_AVG, "
-			+ "       IFNULL( "
-			+ "	      ( "
-			+ "		    ( "
-			+ "		      ( (SELECT AVG(STDEV) FROM stats WHERE stats.code_ticker IN ("+forQuery+") AND STDEV < 2*(SELECT AVG(STDEV) FROM stats)) "
-			+ "			     + ( (SELECT AVG(STDEV) FROM stats WHERE stats.code_ticker IN ("+forQuery+") AND STDEV < 2*(SELECT AVG(STDEV) FROM stats)) "
-			+ "                    - (SELECT STDEV FROM stats WHERE stats.code_ticker=assets.code_ticker AND STDEV < 2*(SELECT AVG(STDEV) FROM stats)) "
-			+ "				   ) "
-			+ "	  	      ) / ( SELECT AVG(STDEV) FROM stats WHERE stats.code_ticker IN ("+forQuery+") AND STDEV < 2*(SELECT AVG(STDEV) FROM stats) ) "
-			+ "		    ) "
-			+ "         * "
-			+ "         ( 1 / "
-			+ "           ( SELECT COUNT(code_ticker) FROM stats WHERE stats.code_ticker IN ("+forQuery+") AND STDEV < 2*(SELECT AVG(STDEV) FROM stats) ) "
-			+ "		    ) "
-			+ "       ), 0 ) AS proportion "
+			String query
+			= "CREATE VIEW temp_portfolio AS "
+			+ "SELECT stats.code_ticker, assets.name, stats.Adj_Annual_AVG, "
+			+ "		  IF( "
+			+ "         ( "
+			+ "			  ( "
+			+ "			    ( (SELECT AVG(STDEV) FROM stats WHERE stats.code_ticker IN ("+forQuery+")) "
+			+ "				   + ( (SELECT AVG(STDEV) FROM stats WHERE stats.code_ticker IN ("+forQuery+")) "
+			+ "					     - (SELECT STDEV FROM stats WHERE stats.code_ticker=assets.code_ticker AND stats.code_ticker IN ("+forQuery+")) "
+			+ "					 ) "
+			+ "			    ) / (SELECT AVG(STDEV) FROM stats WHERE stats.code_ticker IN ("+forQuery+")) "
+			+ "			  ) "
+			+ "			  * ( 1 / (SELECT COUNT(code_ticker) FROM stats WHERE stats.code_ticker IN ("+forQuery+")) ) "
+			+ "		    ) >= 0 , ( "
+			+ "                  ( "
+			+ "			           ( "
+			+ "			             ( (SELECT AVG(STDEV) FROM stats WHERE stats.code_ticker IN ("+forQuery+")) "
+			+ "						    + ( (SELECT AVG(STDEV) FROM stats WHERE stats.code_ticker IN ("+forQuery+")) "
+			+ "					              - (SELECT STDEV FROM stats WHERE stats.code_ticker=assets.code_ticker AND stats.code_ticker IN ("+forQuery+")) "
+			+ "					          ) "
+			+ "						 ) / (SELECT AVG(STDEV) FROM stats WHERE stats.code_ticker IN ("+forQuery+")) "
+			+ "					   ) * ( 1 / (SELECT COUNT(code_ticker) FROM stats WHERE stats.code_ticker IN ("+forQuery+")) ) "
+			+ "					 ) "
+			+ "				     ) , 0 "
+			+ "           ) AS forCalcProp "
 			+ "FROM stats, assets "
 			+ "WHERE stats.code_ticker=assets.code_ticker "
 			+ "AND stats.code_ticker "
 			+ "IN ("+forQuery+") "
-			+ "ORDER BY proportion DESC; ";
+			+ "ORDER BY forCalcProp DESC; ";
+			
+			pstmt=conn.prepareStatement(query);
+			pstmt.executeUpdate();
+			
+			pstmt.close();
+			conn.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	} // public void PrepareForSHCWI()
+
+	private String ExecuteSHCWI() {   // SiHoonChris 가중방식 실행 결과를 저장한다
+		List<DataDTO> statsForTable = new ArrayList<DataDTO>();
+		String tableComp="";
+		
+		try {
+			conn = dataFactory.getConnection();
+			
+			String query
+			="SELECT code_ticker, name, Adj_Annual_AVG, forCalcProp, "
+			+"       (forCalcProp * 1/(SELECT SUM(forCalcProp) from temp_portfolio)) AS proportion "
+			+"FROM temp_portfolio; ";
 			
 			pstmt=conn.prepareStatement(query);
 			rs=pstmt.executeQuery();
@@ -236,13 +265,13 @@ public class DataDAO {
 			}
 			
 			for(int i=0; i<statsForTable.size(); i++) {
-				tableComponent += "<tr>";
-				tableComponent += "<td id='No'>"+(i+1)+"</td>";
-				tableComponent += "<td id='CodeTicker'>"+statsForTable.get(i).code_ticker+"</td>";
-				tableComponent += "<td id='NameOfStock'>"+statsForTable.get(i).name+"</td>";
-				tableComponent += "<td id='YieldRate'>"+statsForTable.get(i).avg_yield+"%</td>";
-				tableComponent += "<td id='Porportion'>"+statsForTable.get(i).proportion+"%</td>";
-				tableComponent += "</tr>";
+				tableComp += "<tr>";
+				tableComp += "<td id='No'>"+(i+1)+"</td>";
+				tableComp += "<td id='CodeTicker'>"+statsForTable.get(i).code_ticker+"</td>";
+				tableComp += "<td id='NameOfStock'>"+statsForTable.get(i).name+"</td>";
+				tableComp += "<td id='YieldRate'>"+statsForTable.get(i).avg_yield+"%</td>";
+				tableComp += "<td id='Porportion'>"+statsForTable.get(i).proportion+"%</td>";
+				tableComp += "</tr>";
 			}
 			
 			rs.close();
@@ -253,8 +282,30 @@ public class DataDAO {
 			e.printStackTrace();
 		}
 		
+		return tableComp;
+	} // public String ExecuteSHCWI()
+	
+	public String SiHoonChrisWeightIndex(String forQuery) {  // SiHoonChris 가중방식 실행, 결과 저장, View 삭제
+		PrepareForSHCWI(forQuery);
+		String tableComponent = ExecuteSHCWI();
+		
+		try {
+			conn = dataFactory.getConnection();
+			
+			String query
+			="DROP VIEW temp_portfolio; ";
+			
+			pstmt=conn.prepareStatement(query);
+			pstmt.executeUpdate();
+			
+			pstmt.close();
+			conn.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 		return tableComponent;
-	} // public String SihoonChrisWeightIndex()
+	} // public String SiHoonChrisWeightIndex()
 	
 	
 } // END - public class DataDAO{}

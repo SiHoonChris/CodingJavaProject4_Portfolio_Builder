@@ -514,9 +514,19 @@ String html = (String)request.getAttribute("html_txt");
 				let Method = AssetsAndMethod.Method.value;
 				let Assets = AssetsAndMethod.Assets.value;
 				
-				AssetsAndMethod.method="post";
-				AssetsAndMethod.action="/result";
-				AssetsAndMethod.submit();
+				if(Assets.length < 1) {
+					alert("적어도 1종목 이상 선택하세요");
+					return false;
+				}
+				else if(Method.length < 1) {
+					alert("가중방식을 선택하세요");
+					return false;
+				}
+				else {
+					AssetsAndMethod.method="post";
+					AssetsAndMethod.action="/result";
+					AssetsAndMethod.submit();
+				}
 			}
 			
 			
