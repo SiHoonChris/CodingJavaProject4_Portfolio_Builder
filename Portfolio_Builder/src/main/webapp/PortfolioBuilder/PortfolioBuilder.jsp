@@ -55,6 +55,8 @@ String html = (String)request.getAttribute("html_txt");
 		   			"a a c b b"
 		   			"a a c b b"
 		   			"a a c b b";
+		   		
+		   		margin-bottom: 2px;
 			}
 			.TL p {
 				margin-top: 7.5px;
@@ -205,6 +207,8 @@ String html = (String)request.getAttribute("html_txt");
 		   		"a a a a a"
 		   		"b b b b c"
 		   		"b b b b c";
+		   		
+		   		margin-top: 8px;
 			}
 			.BL .select   {
 				grid-area: a;
@@ -230,9 +234,9 @@ String html = (String)request.getAttribute("html_txt");
 		/* (Bottom-Left) 포트폴리오 구성 방법 선택 ------------------------------------- */
 			
 		/* (Bottom-Right) 포트폴리오 구성 비중 원차트 ----------------------------------- */
-			.BR {grid-area: d;}
+			.BR {grid-area: d; padding:0; border: 1px black solid;}
 			
-			#canvas {border: 1px black solid;}
+			#canvas {}
 		/* (Bottom-Right) 포트폴리오 구성 비중 원차트 ----------------------------------- */
 		</style>
 	</head>
@@ -345,7 +349,9 @@ String html = (String)request.getAttribute("html_txt");
   			</div>
 <!-- TR 파트 -->
 <!-- BR 파트 -->
- 			<canvas width="600px" height="414px" class="BR" id='canvas'></canvas>
+			<div class="BR">
+ 				<canvas width="600px" height="414px" id='canvas'></canvas>
+			</div>
   		</div>
 <!-- BR 파트 -->
 		<!-- <script src="PortfolioBuilder.js"></script> -->
@@ -570,6 +576,36 @@ String html = (String)request.getAttribute("html_txt");
 				ctx.closePath();
 				ctx.stroke();
 				ctx.restore();
+			}
+			
+			canvas.addEventListener("click", function(event){
+				// clientX,Y(브라우저(웹 페이지)의 크기를 기준으로 위치 계산) vs. screenX,Y(화면(모니터)의 크기를 기준으로 위치 계산)
+				// offsetTop, offsetLeft
+				// => offsetTop is the number of pixels from the top of the closest relatively positioned parent element(margin을 포함한 영역을 기준으로 함)
+				var x1 = event.clientX-canvas.offsetLeft;
+				var y1 = event.clientY-canvas.offsetTop;
+				var inn = isInsideArc(x1, y1);
+				console.log(event.clientX);
+				console.log(event.screenX);
+				
+				console.log(inn);
+			});
+			
+			function isInsideArc(x1, y1){  // 이벤트 위치 파악 함수
+				var result1 = false; // 원의 중심점 기준, 반지름 내부에 들어왔는지 확인
+				var result2 = false;
+				var index = -1;
+				var circle_len = radius;
+				var x = width/2 - x1;
+				var y = height/2 - y1;
+				var my_len = Math.sqrt(Math.abs(x*x)+Math.abs(y*y));
+				
+				if(circle_len >= my_len) {result1=true;}
+				
+				var rad = Math.atan2(y,x); // 아크탄젠트(이벤트 발생 지점의 (중심점 기준)방향 확인) 활용, 라디안으로 계산됨
+				rad = (rad*180)/Math.PI; // 라디안 => 각
+				
+				return {x:x, y:y, my_len:my_len, result1:result1, result2:result2, index:index, degree:rad};
 			}
 		</script>
 	</body>

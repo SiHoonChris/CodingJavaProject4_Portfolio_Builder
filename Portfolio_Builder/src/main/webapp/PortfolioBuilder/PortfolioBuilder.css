@@ -42,6 +42,8 @@
    			"a a c b b"
    			"a a c b b"
    			"a a c b b";
+   			
+   		margin-bottom: 2px;
 	}
 	.TL p {
 		margin-top: 7.5px;
@@ -193,6 +195,8 @@
    		"a a a a a"
    		"b b b b c"
    		"b b b b c";
+   		
+   		margin-top: 8px;
 	}
 	.BL .select   {
 		grid-area: a;
@@ -218,8 +222,7 @@
 /* (Bottom-Left) 포트폴리오 구성 방법 선택 ------------------------------------- */
 	
 /* (Bottom-Right) 포트폴리오 구성 비중 원차트 ----------------------------------- */
-	.BR {
- 		grid-area: d;
- 		border: 1px solid black;
-	}
+	.BR {grid-area: d;}
+			
+	#canvas {border: 1px black solid;}
 /* (Bottom-Right) 포트폴리오 구성 비중 원차트 ----------------------------------- */	

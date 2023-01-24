@@ -191,18 +191,20 @@ const canvas = document.getElementById('canvas');
 const ctx    = canvas.getContext('2d');
 var   width  = canvas.clientWidth;
 var   height = canvas.clientHeight;
-var   value  = [42.13, 23.28, 34.59];
+var   value  = [42.13 , 23.28 , 34.59];
 var   degree = 360;
 var   radius = 150; // 반지름
 
-var sum = value.reduce((a, b) => a+b); // sum : 총 합계
-var conv_array = value.slice().map((data) => { // conv_array : 비율(개별 데이터/데이터 총합)들이 담긴 배열
+// sum : 총 합계
+var sum = value.reduce((a, b) => a+b);
+// conv_array : 비율(개별 데이터/데이터 총합)들이 담긴 배열
+var conv_array = value.slice().map((data) => {
 	var rate = data / sum;
 	var myDegree = degree * rate;
 	return myDegree;
 });
 
-degree = 0; // 360에서 0으로 초기화 
+degree = 0; // 360 => 0으로 초기화 
 
 for(var i=0; i<conv_array.length; i++) {
 	var item = conv_array[i];
@@ -224,4 +226,31 @@ for(var i=0; i<conv_array.length; i++) {
 	ctx.closePath();
 	ctx.stroke();
 	ctx.restore();
+}
+
+canvas.addEventListener("click", function(event){
+	// clientX,Y(브라우저(웹 페이지)의 크기를 기준으로 위치 계산) vs. screenX,Y(화면(모니터)의 크기를 기준으로 위치 계산)
+	// offsetTop, offsetLeft
+	// => offsetTop is the number of pixels from the top of the closest relatively positioned parent element(margin을 포함한 영역을 기준으로 함)
+	var x1 = event.clientX-canvas.offsetLeft;
+	var y1 = event.clientY-canvas.offsetTop;
+	var inn = isInsideArc(x1, y1);
+	console.log(inn);
+});
+
+function isInsideArc(x1, y1){  // 이벤트 위치 파악 함수
+	var result1 = false; // 원의 반지름 내부에 들어왔는지 확인
+	var result2 = false; // 이벤트 발생 지점의 (중심점 기준)방향 확인(아크탄젠트 활용)
+	var index = -1;
+	var circle_len = radius;
+	var x = width/2 - x1;
+	var y = height/2 - y1;
+	var my_len = Math.sqrt(Math.abs(x*x)+Math.abs(y*y));
+	
+	if(circle_len >= my_len) {result1=true;}
+	
+	var rad = Math.atan2(y,x); // 아크탄젠트. 라디안으로 계산됨
+	rad = (rad*180)/Math.PI; // 라디안 => 각
+	
+	return {x:x, y:y, my_len:my_len, result1:result1, result2:result2, index:index, degree:rad};
 }
