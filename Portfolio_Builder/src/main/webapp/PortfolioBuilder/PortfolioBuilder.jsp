@@ -537,11 +537,19 @@ String html = (String)request.getAttribute("html_txt");
 			
 			
 			// BR) 원차트(도넛차트) 만들기
+			var prop_array=document.getElementsByName('Proportion');
+			var name_array = document.getElementsByName('CodeTicker');
 			const canvas = document.getElementById('canvas');
 			const ctx    = canvas.getContext('2d');
 			var   width  = canvas.clientWidth;
 			var   height = canvas.clientHeight;
-			var   value  = [42.13 , 23.28 , 34.59];
+			var   value  = [];
+			function getDatasForChart() { // 문자열=>숫자열 (42.13% => 42.13)
+				for(var i=0; i<prop_array.length; i++){		
+					value.push( parseFloat(prop_array[i].innerHTML.substr(0, (prop_array[i].innerHTML.length-1))) ); 
+				}
+			}
+			getDatasForChart();
 			var   degree = 360;
 			var   radius = 150; // 반지름
 			
@@ -555,7 +563,7 @@ String html = (String)request.getAttribute("html_txt");
 			});
 			
 			degree = 0; // 360 => 0으로 초기화 
-			
+			var event_array = value.slice().map(arg=>[]);
 			for(var i=0; i<conv_array.length; i++) {
 				var item = conv_array[i];
 				ctx.save();
@@ -566,11 +574,11 @@ String html = (String)request.getAttribute("html_txt");
 					// ctx.arc(x좌표, y좌표, 반지름(radius), 시작각(startAngle), 끝각(endAngle), counterClockwise)
 					ctx.arc(width/2, height/2, radius, (Math.PI/180)*0, (Math.PI/180)*item, false);
 					degree = item;
-					console.log(0, degree);
+					event_array[i]=[0, degree];
 				}
 				else {
 					ctx.arc(width/2, height/2, radius, (Math.PI/180)*degree, (Math.PI/180)*(degree+item), false);
-					console.log(degree, degree+item);
+					event_array[i]=[degree, degree+item];
 					degree = degree + item;
 				}
 				ctx.closePath();
@@ -578,17 +586,27 @@ String html = (String)request.getAttribute("html_txt");
 				ctx.restore();
 			}
 			
-			canvas.addEventListener("click", function(event){
+			var drawed = false;
+			canvas.addEventListener("mousemove", function(event){
 				// clientX,Y(브라우저(웹 페이지)의 크기를 기준으로 위치 계산) vs. screenX,Y(화면(모니터)의 크기를 기준으로 위치 계산)
 				// offsetTop, offsetLeft
 				// => offsetTop is the number of pixels from the top of the closest relatively positioned parent element(margin을 포함한 영역을 기준으로 함)
 				var x1 = event.clientX-canvas.offsetLeft;
 				var y1 = event.clientY-canvas.offsetTop;
 				var inn = isInsideArc(x1, y1);
-				console.log(event.clientX);
-				console.log(event.screenX);
-				
 				console.log(inn);
+				if(inn.index>-1){
+					drawed=true;
+					hoverCanvas(inn.index);
+					makeText(inn.index);
+				}
+				else {
+					if(drawed){
+						hoverCanvas(-1);
+						makeText(-1);
+					}
+					drawed=false;
+				}
 			});
 			
 			function isInsideArc(x1, y1){  // 이벤트 위치 파악 함수
@@ -600,13 +618,83 @@ String html = (String)request.getAttribute("html_txt");
 				var y = height/2 - y1;
 				var my_len = Math.sqrt(Math.abs(x*x)+Math.abs(y*y));
 				
-				if(circle_len >= my_len) {result1=true;}
+				if(circle_len >= my_len) {result1 = true;}
 				
 				var rad = Math.atan2(y,x); // 아크탄젠트(이벤트 발생 지점의 (중심점 기준)방향 확인) 활용, 라디안으로 계산됨
-				rad = (rad*180)/Math.PI; // 라디안 => 각
+				rad = (rad*180)/Math.PI; // 라디안 => 각 , 음수가 나옴
+				rad += 180;
+				
+				if(result1){                          // 반지름(원 범위) 안에 있으면서
+					event_array.forEach((arr, idx)=>{ // 각도 범위 안에 있는지 확인
+						if(rad>=arr[0] && rad<=arr[1]){
+							result2 = true;
+							index = idx; // 0부터 시작
+						}
+					});
+				}
 				
 				return {x:x, y:y, my_len:my_len, result1:result1, result2:result2, index:index, degree:rad};
 			}
+			
+			function hoverCanvas(index) {  // 마우스 동작에 따라 차트가 다시 그려짐(앞에서 처음 원형차트 만들 때 했던 과정 반복)
+				ctx.clearRect(0,0,width,height);  // canvas 안의 내용물 지우기
+				for (var i=0; i<conv_array.length; i++) {
+					var item = conv_array[i];
+					ctx.save();
+					ctx.beginPath();
+					var innRadius = radius;
+					ctx.moveTo(width/2, height/2);
+					
+					if(index == i) {  // 대상이면 색칠 및 크기 조정
+						ctx.lineWidth = 3;
+						ctx.strokeStyle = 'blue';
+						innRadius = radius*1.1;
+					}
+					if(i == 0) {
+						ctx.arc(width/2, height/2, innRadius, (Math.PI/180)*0, (Math.PI/180)*item, false);
+						degree = item; // 초기화
+					}
+					else {
+						ctx.arc(width/2, height/2, innRadius, (Math.PI/180)*degree, (Math.PI/180)*(degree+item), false);
+						degree = degree + item;
+					}
+					
+					ctx.closePath();
+					ctx.stroke();
+					ctx.restore();
+				}
+			}
+			
+			function degreeToRadian(degree) { // 도 => 라디안
+				return degree*(Math.PI/180);
+			}
+			
+			function makeText(index) {				
+				event_array.forEach((itm, idx) => {
+					var half = (itm[1]-itm[0])/2;
+					var degr = itm[0]+half;
+					var xx = Math.cos(degreeToRadian(degr)) * radius * 0.7 + width/2;
+					var yy = Math.sin(degreeToRadian(degr)) * radius * 0.7 + height/2;
+					
+					var txt; // 마우스 위치에 따라 다른 값 출력
+					var minus = ctx.measureText(txt).width/2; // 텍스트 절반 길이
+					ctx.save();
+					
+					if(index==idx) {
+						ctx.font = "normal bold 22px serif";
+						ctx.fillStyle='blue';
+						txt=prop_array[idx].innerHTML;
+					}
+					else {
+						ctx.font = "normal 18px";
+						txt=name_array[idx].innerHTML;
+					}
+					ctx.fillText(txt, xx-minus, yy);
+					ctx.restore();
+				});
+			}
+			
+			makeText(-1);
 		</script>
 	</body>
 </html>

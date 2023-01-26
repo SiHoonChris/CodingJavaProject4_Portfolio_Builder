@@ -118,11 +118,11 @@ public class DataDAO {
 			
 			for(int i=0; i<statsForTable.size(); i++) {
 				tableComponent += "<tr>";
-				tableComponent += "<td id='No'>"+(i+1)+"</td>";
-				tableComponent += "<td id='CodeTicker'>"+statsForTable.get(i).code_ticker+"</td>";
-				tableComponent += "<td id='NameOfStock'>"+statsForTable.get(i).name+"</td>";
-				tableComponent += "<td id='YieldRate'>"+statsForTable.get(i).avg_yield+"%</td>";
-				tableComponent += "<td id='Porportion'>"+statsForTable.get(i).proportion+"%</td>";
+				tableComponent += "<td id='No' name='No'>"+(i+1)+"</td>";
+				tableComponent += "<td id='CodeTicker' name='CodeTicker'>"+statsForTable.get(i).code_ticker+"</td>";
+				tableComponent += "<td id='NameOfStock' name='NameOfStock'>"+statsForTable.get(i).name+"</td>";
+				tableComponent += "<td id='YieldRate' name='YieldRate'>"+statsForTable.get(i).avg_yield+"%</td>";
+				tableComponent += "<td id='Proportion' name='Proportion'>"+statsForTable.get(i).proportion+"%</td>";
 				tableComponent += "</tr>";
 			}
 			
@@ -172,11 +172,11 @@ public class DataDAO {
 			
 			for(int i=0; i<statsForTable.size(); i++) {
 				tableComponent += "<tr>";
-				tableComponent += "<td id='No'>"+(i+1)+"</td>";
-				tableComponent += "<td id='CodeTicker'>"+statsForTable.get(i).code_ticker+"</td>";
-				tableComponent += "<td id='NameOfStock'>"+statsForTable.get(i).name+"</td>";
-				tableComponent += "<td id='YieldRate'>"+statsForTable.get(i).avg_yield+"%</td>";
-				tableComponent += "<td id='Porportion'>"+statsForTable.get(i).proportion+"%</td>";
+				tableComponent += "<td id='No' name='No'>"+(i+1)+"</td>";
+				tableComponent += "<td id='CodeTicker' name='CodeTicker'>"+statsForTable.get(i).code_ticker+"</td>";
+				tableComponent += "<td id='NameOfStock' name='NameOfStock'>"+statsForTable.get(i).name+"</td>";
+				tableComponent += "<td id='YieldRate' name='YieldRate'>"+statsForTable.get(i).avg_yield+"%</td>";
+				tableComponent += "<td id='Proportion' name='Proportion'>"+statsForTable.get(i).proportion+"%</td>";
 				tableComponent += "</tr>";
 			}
 			
@@ -266,11 +266,11 @@ public class DataDAO {
 			
 			for(int i=0; i<statsForTable.size(); i++) {
 				tableComp += "<tr>";
-				tableComp += "<td id='No'>"+(i+1)+"</td>";
-				tableComp += "<td id='CodeTicker'>"+statsForTable.get(i).code_ticker+"</td>";
-				tableComp += "<td id='NameOfStock'>"+statsForTable.get(i).name+"</td>";
-				tableComp += "<td id='YieldRate'>"+statsForTable.get(i).avg_yield+"%</td>";
-				tableComp += "<td id='Porportion'>"+statsForTable.get(i).proportion+"%</td>";
+				tableComp += "<td id='No' name='No'>"+(i+1)+"</td>";
+				tableComp += "<td id='CodeTicker' name='CodeTicker'>"+statsForTable.get(i).code_ticker+"</td>";
+				tableComp += "<td id='NameOfStock' name='NameOfStock'>"+statsForTable.get(i).name+"</td>";
+				tableComp += "<td id='YieldRate' name='YieldRate'>"+statsForTable.get(i).avg_yield+"%</td>";
+				tableComp += "<td id='Proportion' name='Proportion'>"+statsForTable.get(i).proportion+"%</td>";
 				tableComp += "</tr>";
 			}
 			
