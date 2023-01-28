@@ -3,7 +3,7 @@
 <%@ page import="java.util.ArrayList" %>
 <%
 DataServlet srv = new DataServlet();
-ArrayList<String> listOfAssets = srv.ShowAll();
+String listOfAssets = srv.ShowAll();
 String html = (String)request.getAttribute("html_txt");
 %>
 
@@ -85,6 +85,7 @@ String html = (String)request.getAttribute("html_txt");
 		   			"b"
 			}
 			.TL .select .type   {grid-area: a;}
+			.TL .select .type p {float:left; padding-left:15px;}
 			.TL .select .scroll {grid-area: b;}
 			
 			.TL .selected {
@@ -130,6 +131,8 @@ String html = (String)request.getAttribute("html_txt");
 			.TL .button #add    {grid-area: a;}
 			.TL .button #remove {grid-area: b;}
 			.TL .button #reset  {grid-area: c;}
+			
+			.TL table input {margin-right: 10px;}
 		/* (Top-Left) 종목 선택, 포트폴리오 편입 -------------------------------------- */	
 			
 		/* (Top-Right) 선택된 종목에 대하여 표 생성 ------------------------------------ */		
@@ -235,8 +238,6 @@ String html = (String)request.getAttribute("html_txt");
 			
 		/* (Bottom-Right) 포트폴리오 구성 비중 원차트 ----------------------------------- */
 			.BR {grid-area: d; padding:0; border: 1px black solid;}
-			
-			#canvas {}
 		/* (Bottom-Right) 포트폴리오 구성 비중 원차트 ----------------------------------- */
 		</style>
 	</head>
@@ -248,20 +249,20 @@ String html = (String)request.getAttribute("html_txt");
 				<div class="select" align="center">
 					<div class="type">
 						<p>
-							<input type="text" placeholder="종목명 검색"/>
-							<span title="전체 종목 수" id="Total">&nbsp;<%=listOfAssets.get(0) %></span>
+							<input id="search_1" type="text" placeholder="종목명 검색"/>
+							<span title="전체 종목 수" id="Total"></span>
 						</p>
 					</div>
 					<div class="scroll">
-						<table>
-							<%=listOfAssets.get(1) %>
+						<table id="showUp_all">
+							<%=listOfAssets %>
 						</table>
 					</div>
 				</div>
 				<div class="selected" align="center">
 					<div class="type">
 						<p>
-							<input type="text" placeholder="종목명 검색"/>
+							<input id="search_2" type="text" placeholder="종목명 검색"/>
 							<span id="number_selec" title="선택한 종목 수">&nbsp;(0)</span>
 						</p>
 					</div>
@@ -357,29 +358,25 @@ String html = (String)request.getAttribute("html_txt");
 		<!-- <script src="PortfolioBuilder.js"></script> -->
 		<script>
 			// TL-1) 종목명 보여주기
-			let total_num = document.getElementById("Total").innerHTML;
-			total_num = total_num.substring(6);
-					
-			for(var i=1 ; i < parseInt(total_num,10) ; i++){
-				let id="list-no"+i;
-				let asset = document.getElementById(id);
-				asset.addEventListener("mouseover", assetMouseOver);
-				asset.addEventListener("mouseout", assetMouseOut);
-			}
-	
-			function assetMouseOver(){ // 종목 코드/티커에 마우스 올리면 풀네임 보여줌
-				document.getElementById("full-name").innerHTML
-				= document.getElementById(event.srcElement.id).getAttribute("name");
-			}
-			function assetMouseOut(){ // 마우스가 나가면 기본 문자열 보여줌
-				document.getElementById("full-name").innerHTML="종목명 상세";
+			let asset = document.getElementsByName("in_list");
+			var tNum  = asset.length;
+			document.getElementById("Total").innerHTML = tNum;  // 종목 수 보여주기
+			
+			for(var i=0; i<tNum; i++){
+				asset[i].addEventListener("mouseover", function(){ // 종목 코드/티커에 마우스 올리면 풀네임 보여줌
+					document.getElementById("full-name").innerHTML
+					= document.getElementById(event.srcElement.id).getAttribute("id");
+				});
+				asset[i].addEventListener("mouseout", function(){ // 마우스가 나가면 기본 문자열 보여줌
+					document.getElementById("full-name").innerHTML = "종목명 상세";
+				});
 			}
 	
 			// TL-2~5) 종목 선택 관련 작업 (버튼 실행)
 			let checkedValue_add = [];    // 선택한 종목들을 checkedValue_add에 담고, add_assets()가 실행되면 selectedAssets로 옮김
 			let checkedValue_remove = []; // 선택한 종목들을 checkedValue_remove에 담고, remove_assets()가 실행되면 selectedAssets로 옮김
 			let selectedAssets=[];  // 종목 선택에 대한 종합적인 결과를 출력하는 배열
-			const map = new Map();  // 4-1)에서 사용 : key는 종목명, value는 그 종목의 위치(배열 안)
+			//const map = new Map();  // 4-1)에서 사용 : key는 종목명, value는 그 종목의 위치(배열 안)
 			let assetName="";
 					
 			// TL-2) 버튼 공통 적용
@@ -418,7 +415,7 @@ String html = (String)request.getAttribute("html_txt");
 				for(var i=0; i<selectedAssets.length; i++){
 					assetName += '<tr><td>';
 					assetName += '<input type="checkbox" name="composition" value="'+selectedAssets[i]+'" ';
-					assetName += 'onclick="remove_in_array(event)" /> ';
+					assetName += 'onclick="remove_in_array(event)" />';
 					assetName += selectedAssets[i];
 					assetName += '</td></tr>';
 				}
@@ -456,7 +453,7 @@ String html = (String)request.getAttribute("html_txt");
 				for(var i=0; i<selectedAssets.length; i++){
 					assetName += '<tr><td>';
 					assetName += '<input type="checkbox" name="composition" value="'+selectedAssets[i]+'" ';
-					assetName += 'onclick="remove_in_array(event)" /> ';
+					assetName += 'onclick="remove_in_array(event)" />';
 					assetName += selectedAssets[i];
 					assetName += '</td></tr>';
 				}
@@ -476,7 +473,57 @@ String html = (String)request.getAttribute("html_txt");
 					
 					aft_buttonClicked();
 				}
-			}		
+			}
+			
+			// TL-6) 종목 검색 구현
+			var       input = document.querySelector('#search_1');			
+			var  innerTable = document.querySelector('#showUp_all');
+			const assetList = document.getElementsByName("in_list");
+			const resultList = new Map();  // 전체 종목에 대한 정보 저장
+			for(var i=0; i<assetList.length; i++) {
+				resultList.set(i, {name : assetList[i].id, ticker : assetList[i].innerHTML});	
+			}
+			
+			input.addEventListener("keyup", function(event){  // 별도의 확인 버튼 없이, 입력된 문자열을 포함하는 내용을 자동으로 <table>형태로 표시
+				var html_string = "";
+				var  noData = true;  // 찾는 데이터가 있는지 없는지 판단(한 개라도 있으면 false)
+				var keyword = input.value.toUpperCase(); // 미국주식의 경우, 대소문자 구분 없이 검색 가능하게 코드 작성
+				console.log(keyword);
+				
+				if(keyword=="" || keyword.length == 0) {  // 입력된 검색어가 없다면, 처음 상태로 돌아온다
+					for(var i=0; i<resultList.size; i++){
+						html_string += "<tr><td>";
+						html_string += "<input type=\"checkbox\" name=\"TL_checkbox\" ";
+						html_string += "id=\""+resultList.get(i).ticker+"\" onclick=\"getCheckboxValue(event)\" />";
+						html_string += "<span id=\""+resultList.get(i).name+"\" name=\"in_list\">";
+						html_string += resultList.get(i).ticker+"</span>";
+						html_string += "</td></tr>";			
+					}
+				}
+				else {  
+					for(var i=0; i<resultList.size; i++){
+						if((resultList.get(i).name).toUpperCase().indexOf(keyword)==0) { // 검색어와 일치하는 데이터만으로 테이블을 구성한다.
+							noData=false;
+							html_string += "<tr><td>";
+							html_string += "<input type=\"checkbox\" name=\"TL_checkbox\" ";
+							html_string += "id=\""+resultList.get(i).ticker+"\" onclick=\"getCheckboxValue(event)\" />";
+							html_string += "<span id=\""+resultList.get(i).name+"\" name=\"in_list\">";
+							html_string += resultList.get(i).ticker+"</span>";
+							html_string += "</td></tr>";
+						}
+					} // for반복문이 끝날 때까지, 조건에 해당하는 데이터가 한 개라도 있으면 noData는 false 
+					
+					if(noData==true){ // 만약 없으면 찾는 결과가 없다("No Data")고 출력
+						html_string += "<tr><td>";
+						html_string += "No Data";
+						html_string += "</td></tr>";
+					}
+					
+				}
+				
+				innerTable.innerHTML = html_string;
+				document.getElementById("Total").innerHTML = document.getElementsByName("in_list").length;  // 검색된 결과에 따라 종목수 변경
+			});
 			
 			
 			// BL-1) 포트폴리오 가중 방식에 대한 설명을 보여준다
@@ -537,7 +584,7 @@ String html = (String)request.getAttribute("html_txt");
 			
 			
 			// BR) 원차트(도넛차트) 만들기
-			var prop_array=document.getElementsByName('Proportion');
+			var prop_array = document.getElementsByName('Proportion');
 			var name_array = document.getElementsByName('CodeTicker');
 			const canvas = document.getElementById('canvas');
 			const ctx    = canvas.getContext('2d');

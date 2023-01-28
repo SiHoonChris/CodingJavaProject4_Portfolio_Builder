@@ -4,28 +4,27 @@
 /* 전체 ----------------------------------------------------------------- */
 	.container {
 		display: grid;
- 		grid-template-columns: repeat(2, 50%);
- 		grid-template-rows: repeat(2, 50%);
- 		height: 828px;
- 		width: 1200px;
- 		gap: 10px;
- 		grid-template-areas:
-   			"a b"
-   			"c d";
-   		margin: 0 auto;
+		grid-template-columns: repeat(2, 50%);
+		grid-template-rows: repeat(2, 50%);
+		height: 828px;
+		width: 1200px;
+		gap: 10px;
+		grid-template-areas:
+		 	"a b"
+ 			"c d";
+ 		margin: 0 auto;
 	}
-		
+
 	button {
 		height:  100%;
 		width:   100%;
 	}
-		
 	.scroll {
 		overflow-y: scroll;
 		font-size: 20px;
 	}
 /* 전체 ----------------------------------------------------------------- */
-	
+
 /* (Top-Left) 종목 선택, 포트폴리오 편입 -------------------------------------- */	
 	.TL {
  		grid-area: a;
@@ -42,14 +41,13 @@
    			"a a c b b"
    			"a a c b b"
    			"a a c b b";
-   			
+   		
    		margin-bottom: 2px;
 	}
 	.TL p {
 		margin-top: 7.5px;
 		margin-bottom: 0px;
 	}
-	
 	.TL .select   {
 		grid-area: a;
 		border: 1px solid black;
@@ -73,6 +71,7 @@
    			"b"
 	}
 	.TL .select .type   {grid-area: a;}
+	.TL .select .type p {float:left; padding-left:15px;}
 	.TL .select .scroll {grid-area: b;}
 	
 	.TL .selected {
@@ -118,6 +117,8 @@
 	.TL .button #add    {grid-area: a;}
 	.TL .button #remove {grid-area: b;}
 	.TL .button #reset  {grid-area: c;}
+	
+	.TL table input {margin-right: 10px;}
 /* (Top-Left) 종목 선택, 포트폴리오 편입 -------------------------------------- */	
 	
 /* (Top-Right) 선택된 종목에 대하여 표 생성 ------------------------------------ */		
@@ -222,7 +223,5 @@
 /* (Bottom-Left) 포트폴리오 구성 방법 선택 ------------------------------------- */
 	
 /* (Bottom-Right) 포트폴리오 구성 비중 원차트 ----------------------------------- */
-	.BR {grid-area: d;}
-			
-	#canvas {border: 1px black solid;}
-/* (Bottom-Right) 포트폴리오 구성 비중 원차트 ----------------------------------- */	
+	.BR {grid-area: d; padding:0; border: 1px black solid;}
+/* (Bottom-Right) 포트폴리오 구성 비중 원차트 ----------------------------------- */

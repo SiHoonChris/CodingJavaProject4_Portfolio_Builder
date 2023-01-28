@@ -15,9 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	public ArrayList<String> ShowAll() { // JSP파일에서 사용할 DB내 종목 정보 출력
+	public String ShowAll() { // JSP파일에서 사용할 DB내 종목 정보 출력
 		DataDAO dao = new DataDAO();
-		ArrayList<String> AllAssets = dao.ListEmAll();
+		String AllAssets = dao.ListEmAll();
 		
 		return AllAssets;
 	} // public String ShowAll()
