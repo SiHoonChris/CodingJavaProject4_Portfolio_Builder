@@ -1,227 +1,220 @@
 @charset "UTF-8";
-/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Box_Alignment_in_CSS_Grid_Layout */
-
 /* 전체 ----------------------------------------------------------------- */
-	.container {
-		display: grid;
-		grid-template-columns: repeat(2, 50%);
-		grid-template-rows: repeat(2, 50%);
-		height: 828px;
-		width: 1200px;
-		gap: 10px;
-		grid-template-areas:
-		 	"a b"
- 			"c d";
- 		margin: 0 auto;
-	}
+.container {
+	display: grid;
+	grid-template-columns: repeat(2, 50%);
+	grid-template-rows: repeat(2, 50%);
+	height: 828px;
+	width: 1200px;
+	gap: 10px;
+	grid-template-areas:
+	 	"a b"
+		"c d";
+	margin: 0 auto;
+}
 
-	button {
-		height:  100%;
-		width:   100%;
-	}
-	.scroll {
-		overflow-y: scroll;
-		font-size: 20px;
-	}
-/* 전체 ----------------------------------------------------------------- */
+button {
+	height:  100%;
+	width:   100%;
+}
+.scroll {
+	overflow-y: scroll;
+	font-size: 20px;
+}
 
 /* (Top-Left) 종목 선택, 포트폴리오 편입 -------------------------------------- */	
-	.TL {
- 		grid-area: a;
- 
- 		display: grid;
- 		grid-template-columns: repeat(5, 20%);
- 		grid-template-rows: repeat(5, 20%);
- 		height: 100%;
- 		width: 100%;
- 		gap: 1px;
- 		grid-template-areas:
-   			"a a d d d"
-   			"a a c b b"
-   			"a a c b b"
-   			"a a c b b"
-   			"a a c b b";
-   		
-   		margin-bottom: 2px;
-	}
-	.TL p {
-		margin-top: 7.5px;
-		margin-bottom: 0px;
-	}
-	.TL .select   {
-		grid-area: a;
-		border: 1px solid black;
-			
-		display: grid;
- 		grid-template-columns: repeat(1, 100%);
- 		grid-template-rows: repeat(10, 10%);
- 		height: 100%;
- 		width: 100%;
- 		gap: 0;
- 		grid-template-areas:
-   			"a"
-   			"b"
-   			"b"
-   			"b"
-   			"b"
-   			"b"
-   			"b"
-   			"b"
-   			"b"
-   			"b"
-	}
-	.TL .select .type   {grid-area: a;}
-	.TL .select .type p {float:left; padding-left:15px;}
-	.TL .select .scroll {grid-area: b;}
-	
-	.TL .selected {
-		grid-area: b;
-		border: 1px solid black;
-			
-		display: grid;
- 		grid-template-columns: repeat(1, 100%);
- 		grid-template-rows: repeat(8, 12.5%);
- 		height: 100%;
- 		width: 100%;
- 		gap: 0;
- 		grid-template-areas:
-   			"a"
-   			"b"
-   			"b"
-   			"b"
-   			"b"
-   			"b"
-   			"b"
-   			"b"
-	}
-	.TL .selected .type   {grid-area: a;}
-	.TL .selected .type p {float:left; padding-left:15px;}
-	
-	.TL .selected .scroll {grid-area: b;}
+.TL {
+	grid-area: a;
+
+	display: grid;
+	grid-template-columns: repeat(5, 20%);
+	grid-template-rows: repeat(5, 20%);
+	height: 100%;
+	width: 100%;
+	gap: 1px;
+	grid-template-areas:
+  		"a a d d d"
+  		"a a c b b"
+  		"a a c b b"
+  		"a a c b b"
+  		"a a c b b";
+  		
+  	margin-bottom: 2px;
+}
+.TL p {
+	margin-top: 7.5px;
+	margin-bottom: 0px;
+}
+.TL .select   {
+	grid-area: a;
+	border: 1px solid black;
 		
-	.TL .display  {grid-area: d; border: 1px solid black; padding-left:10px;}
-	.TL .button   {
-		grid-area: c;
+	display: grid;
+	grid-template-columns: repeat(1, 100%);
+	grid-template-rows: repeat(10, 10%);
+	height: 100%;
+	width: 100%;
+	gap: 0;
+	grid-template-areas:
+  		"a"
+  		"b"
+  		"b"
+  		"b"
+  		"b"
+  		"b"
+  		"b"
+  		"b"
+  		"b"
+  		"b"
+}
+.TL .select .type   {grid-area: a;}
+.TL .select .type p {float:left; padding-left:15px;}
+.TL .select .scroll {grid-area: b;}
+
+.TL .selected {
+	grid-area: b;
+	border: 1px solid black;
 			
-		display: grid;
-		grid-template-columns: repeat(1, 100%);
- 		grid-template-rows: repeat(3, 33.1%);
- 		height: 100%;
- 		width: 100%;
-		gap: 1px;
-		grid-template-areas:
-			"a"
-			"b"
-			"c";
-		}
-	.TL .button #add    {grid-area: a;}
-	.TL .button #remove {grid-area: b;}
-	.TL .button #reset  {grid-area: c;}
+	display: grid;
+ 	grid-template-columns: repeat(1, 100%);
+ 	grid-template-rows: repeat(8, 12.5%);
+ 	height: 100%;
+ 	width: 100%;
+ 	gap: 0;
+ 	grid-template-areas:
+   		"a"
+   		"b"
+   		"b"
+   		"b"
+   		"b"
+   		"b"
+   		"b"
+   		"b"
+}
+.TL .selected .type   {grid-area: a;}
+.TL .selected .type p {float:left; padding-left:15px;}
 	
-	.TL table input {margin-right: 10px;}
-/* (Top-Left) 종목 선택, 포트폴리오 편입 -------------------------------------- */	
+.TL .selected .scroll {grid-area: b;}
+		
+.TL .display  {grid-area: d; border: 1px solid black; padding-left:10px;}
+.TL .button   {
+	grid-area: c;
+		
+	display: grid;
+	grid-template-columns: repeat(1, 100%);
+	grid-template-rows: repeat(3, 33.1%);
+	height: 100%;
+ 	width: 100%;
+	gap: 1px;
+	grid-template-areas:
+		"a"
+		"b"
+		"c";
+	}
+.TL .button #add    {grid-area: a;}
+.TL .button #remove {grid-area: b;}
+.TL .button #reset  {grid-area: c;}
+	
+.TL table input {margin-right: 10px;}
 	
 /* (Top-Right) 선택된 종목에 대하여 표 생성 ------------------------------------ */		
-	.TR {
-		grid-area: b;
-		height: 92%;
-	}
- 	#table  {
-		border: 1px solid black;
+.TR {
+	grid-area: b;
+	height: 92%;
+}
+#table  {
+	border: 1px solid black;
 
-		display:grid;
- 		grid-template-columns: repeat(1, 100%);
- 		grid-template-rows: repeat(12, 8.33%);
- 		height: 100%;
- 		width: 100%;
- 		gap: 0;
- 		grid-template-areas:
- 			"a"
- 			"b"
- 		 	"b"
- 			"b"
- 		 	"b"
- 			"b"
- 		 	"b"
- 			"b"
- 			"b"
- 			"b"
- 		 	"b"
- 		 	"b"
-	}	
-	.TR #table #portfolio_table_head {grid-area:a;}
-	.TR #table #portfolio_table_head table {
-		width:  580px;
-		height: 30px;
-		border-collapse: collapse;}
-	.TR #table #portfolio_table_head th {
-		border-right: 1px solid;
-		border-bottom: 1px solid;
-		background-color: #b3f4ea;
-	}
+	display:grid;
+ 	grid-template-columns: repeat(1, 100%);
+ 	grid-template-rows: repeat(12, 8.33%);
+ 	height: 100%;
+ 	width: 100%;
+ 	gap: 0;
+ 	grid-template-areas:
+ 		"a"
+ 		"b"
+ 		"b"
+ 		"b"
+ 		"b"
+ 		"b"
+ 		"b"
+ 		"b"
+ 		"b"
+ 		"b"
+ 		"b"
+ 		"b"
+}	
+.TR #table #portfolio_table_head {grid-area:a;}
+.TR #table #portfolio_table_head table {
+	width:  580px;
+	height: 30px;
+	border-collapse: collapse;}
+.TR #table #portfolio_table_head th {
+	border-right: 1px solid;
+	border-bottom: 1px solid;
+	background-color: #b3f4ea;
+}
 	
-	.TR #table #portfolio_table_rows {grid-area:b;}
-	.TR #table #portfolio_table_rows table {
-		width:  580px;
-		height: 30px;
-		border-collapse: collapse;}
-	.TR #table #portfolio_table_rows td {
-		border-right: 1px solid;
-		border-top: 1px solid;
-		border-bottom: 1px solid;
-		text-align:center;
-		font-size: 15px;
-	}
+.TR #table #portfolio_table_rows {grid-area:b;}
+.TR #table #portfolio_table_rows table {
+	width:  580px;
+	height: 30px;
+	border-collapse: collapse;}
+.TR #table #portfolio_table_rows td {
+	border-right: 1px solid;
+	border-top: 1px solid;
+	border-bottom: 1px solid;
+	text-align:center;
+	font-size: 15px;
+}
 	
-	.TR #table #No          {width:10%;}
-	.TR #table #CodeTicker  {width:28%;}
-	.TR #table #NameOfStock {width:36%;}
-	.TR #table #YieldRate   {width:14%;}
-	.TR #table #Porportion  {width:12%;}
+.TR #table #No          {width:10%;}
+.TR #table #CodeTicker  {width:28%;}
+.TR #table #NameOfStock {width:36%;}
+.TR #table #YieldRate   {width:14%;}
+.TR #table #Porportion  {width:12%;}
 	
 
-	.time {float: right;}
-/* (Top-Right) 선택된 종목에 대하여 표 생성 ------------------------------------ */
+.tYRate {float: right;}
 	
 /* (Bottom-Left) 포트폴리오 구성 방법 선택 ------------------------------------- */	
-	.BL {
- 		grid-area: c;
- 		display: grid;
- 		grid-template-columns: repeat(5, 20%);
- 		grid-template-rows: repeat(3, 33.33%);
- 		height: 100%;
- 		width: 100%;
- 		gap: 1px;
- 		grid-template-areas:
+.BL {
+ 	grid-area: c;
+ 	display: grid;
+ 	grid-template-columns: repeat(5, 20%);
+ 	grid-template-rows: repeat(3, 33.33%);
+ 	height: 100%;
+ 	width: 100%;
+ 	gap: 1px;
+ 	grid-template-areas:
    		"a a a a a"
    		"b b b b c"
    		"b b b b c";
    		
-   		margin-top: 8px;
-	}
-	.BL .select   {
-		grid-area: a;
-		border: 1px solid black;
+   	margin-top: 8px;
+}
+.BL .select   {
+	grid-area: a;
+	border: 1px solid black;
 			
- 		display: grid;
- 		grid-template-columns: repeat(2, 50%);
- 		grid-template-rows: repeat(5, 20%);
- 		height: 100%;
- 		width: 100%;
- 		gap: 0px;
- 		grid-template-areas:
-   			"a a"
-   			"b b"
-   			"b b"
-   			"b b"
-   			"b b";
-	}
-	.BL .select .title {grid-area:a;}
-	.BL .select .scroll {grid-area:b;}
-	.BL .selected {grid-area: b; border: 1px solid black;}
-	.BL .button   {grid-area: c;}
-/* (Bottom-Left) 포트폴리오 구성 방법 선택 ------------------------------------- */
+ 	display: grid;
+ 	grid-template-columns: repeat(2, 50%);
+ 	grid-template-rows: repeat(5, 20%);
+ 	height: 100%;
+ 	width: 100%;
+ 	gap: 0px;
+ 	grid-template-areas:
+   		"a a"
+   		"b b"
+   		"b b"
+   		"b b"
+   		"b b";
+}
+.BL .select .title {grid-area:a;}
+.BL .select .scroll {grid-area:b;}
+.BL .selected {grid-area: b; border: 1px solid black;}
+.BL .button   {grid-area: c;}
 	
 /* (Bottom-Right) 포트폴리오 구성 비중 원차트 ----------------------------------- */
-	.BR {grid-area: d; padding:0; border: 1px black solid;}
-/* (Bottom-Right) 포트폴리오 구성 비중 원차트 ----------------------------------- */
+.BR {grid-area: d; padding:0; border: 1px black solid;}

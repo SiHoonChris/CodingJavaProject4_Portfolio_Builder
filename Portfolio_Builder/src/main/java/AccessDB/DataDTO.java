@@ -2,7 +2,6 @@ package AccessDB;
 
 public class DataDTO {
 	String country, name, code_ticker, avg_yield, proportion;
-	
 	public DataDTO() {}
 
 	public String getCountry()                       {return country;}
@@ -17,8 +16,6 @@ public class DataDTO {
 	public void   setProportion(float proportion)    {this.proportion = String.format("%.2f", (proportion*100));}
 
 	@Override
-	public String toString() {
-		return "DataDTO [국가=" + country + ", 종목명=" + name + ", 종목번호/티커=" + code_ticker + "]";
-	}
+	public String toString() {return "DataDTO [국가=" + country + ", 종목명=" + name + ", 종목번호/티커=" + code_ticker + "]";}
 	
 } // END - public class DataDTO{}

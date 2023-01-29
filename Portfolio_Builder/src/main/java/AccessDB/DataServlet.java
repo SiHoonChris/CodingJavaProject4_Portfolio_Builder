@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	public String ShowAll() { // JSP파일에서 사용할 DB내 종목 정보 출력
+	public String ShowAll() { // DB내 전체 종목 정보(JSP)
 		DataDAO dao = new DataDAO();
 		String AllAssets = dao.ListEmAll();
 		
@@ -39,8 +39,7 @@ public class DataServlet extends HttpServlet {
 			String html_txt = dao.EqualWeightIndex(Assets);
 			request.setAttribute("html_txt", html_txt);
 			
-			RequestDispatcher dispatcher
-			= request.getRequestDispatcher("/PortfolioBuilder/PortfolioBuilder.jsp");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/PortfolioBuilder/PortfolioBuilder.jsp");
 			dispatcher.forward(request, response);
 		}
 		else if(Method.equals("cwi")) {
@@ -48,8 +47,7 @@ public class DataServlet extends HttpServlet {
 			String html_txt = dao.CapitalizationWeightIndex(Assets);
 			request.setAttribute("html_txt", html_txt);
 			
-			RequestDispatcher dispatcher
-			= request.getRequestDispatcher("/PortfolioBuilder/PortfolioBuilder.jsp");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/PortfolioBuilder/PortfolioBuilder.jsp");
 			dispatcher.forward(request, response);
 		}
 		else if(Method.equals("shcwi")) {
@@ -57,8 +55,7 @@ public class DataServlet extends HttpServlet {
 			String html_txt = dao.SiHoonChrisWeightIndex(Assets);
 			request.setAttribute("html_txt", html_txt);
 			
-			RequestDispatcher dispatcher
-			= request.getRequestDispatcher("/PortfolioBuilder/PortfolioBuilder.jsp");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/PortfolioBuilder/PortfolioBuilder.jsp");
 			dispatcher.forward(request, response);
 		}
 	} // protected void doHandle()

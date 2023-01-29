@@ -20,23 +20,15 @@ public class DataDAO {
 	int listSize;
 	
 	
-	// ----------------------------------------
-	// 0. DB와의 연결통로 생성
-	// ----------------------------------------
-	public DataDAO() {
+	public DataDAO() { // DB연결 생성
 		try {
 			Context ctx = new InitialContext();
 			Context env = (Context) ctx.lookup("java:/comp/env");
 			dataFactory = (DataSource) env.lookup("jdbc/mysql");
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+		} catch(Exception e) {e.printStackTrace();}
 	} // public DataDAO()
 
-	// ----------------------------------------
-	// 1. 선택 가능한 종목 전체 가져오기
-	// ----------------------------------------
-	public String ListEmAll() {
+	public String ListEmAll() { // 종목 전체 조회/출력
 		String list="";
 		
 		try {
@@ -70,18 +62,12 @@ public class DataDAO {
 			pstmt.close();
 			conn.close();
 			
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+		} catch(Exception e) {e.printStackTrace();}
 
 		return list;
-
 	} // public void ListEmAll()
 	
-	// ----------------------------------------
-	// 2. 동일 가중방식 구현
-	// ----------------------------------------	
-	public String EqualWeightIndex(String forQuery) {
+	public String EqualWeightIndex(String forQuery) { // 동일 가중방식 구현
 		List<DataDTO> statsForTable = new ArrayList<DataDTO>();
 		String tableComponent="";
 		
@@ -123,17 +109,12 @@ public class DataDAO {
 			pstmt.close();
 			conn.close();
 		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
+		catch(Exception e) {e.printStackTrace();}
 		
 		return tableComponent;
 	} // public String EqualWeightIndex()
 	
-	// ----------------------------------------
-	// 3. 시가총액 가중방식 구현
-	// ----------------------------------------	
-	public String CapitalizationWeightIndex(String forQuery) {
+	public String CapitalizationWeightIndex(String forQuery) { // 시가총액 가중방식 구현
 		List<DataDTO> statsForTable = new ArrayList<DataDTO>();
 		String tableComponent="";
 		
@@ -177,16 +158,12 @@ public class DataDAO {
 			pstmt.close();
 			conn.close();
 		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
+		catch(Exception e) {e.printStackTrace();}
 		
 		return tableComponent;
 	} // public String CapitalizationWeightIndex()
 	
-	// ----------------------------------------------------------------------------------
 	// 4. SiHoonChris 가중방식 구현 - PrepareForSHCWI, ExecuteSHCWI, SiHoonChrisWeightIndex
-	// ----------------------------------------------------------------------------------
 	private void PrepareForSHCWI(String forQuery) {   // SiHoonChris 가중방식을 사용하기 위한 View를 생성한다.		
 		try {
 			conn = dataFactory.getConnection();
@@ -228,9 +205,7 @@ public class DataDAO {
 			pstmt.close();
 			conn.close();
 		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
+		catch(Exception e) {e.printStackTrace();}
 	} // public void PrepareForSHCWI()
 
 	private String ExecuteSHCWI() {   // SiHoonChris 가중방식 실행 결과를 저장한다
@@ -271,9 +246,7 @@ public class DataDAO {
 			pstmt.close();
 			conn.close();
 		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
+		catch(Exception e) {e.printStackTrace();}
 		
 		return tableComp;
 	} // public String ExecuteSHCWI()
@@ -293,9 +266,7 @@ public class DataDAO {
 			
 			pstmt.close();
 			conn.close();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+		} catch(Exception e) {e.printStackTrace();}
 		
 		return tableComponent;
 	} // public String SiHoonChrisWeightIndex()
