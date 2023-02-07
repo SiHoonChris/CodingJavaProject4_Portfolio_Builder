@@ -9,12 +9,21 @@
 </div>
 <br><br>
 
-(GIF 사진 추가 예정)  
-(GIF 1. 종목명 출력 - 마우스 올리면 전시)  
-(GIF 2. 자료 전송(추가, 제거, 초기화))  
-(GIF 3. 키워드 입력에 따른 자동 검색)  
-(GIF 4. 테이블 출력 & 차트 생성)  
-(GIF 5. 차트 효과)  
+1  
+![1mouseevent](https://user-images.githubusercontent.com/109140000/217211736-b1931e93-0ce1-4289-aa9d-f34443fcbdc3.gif)  
+2  
+![2autosearch](https://user-images.githubusercontent.com/109140000/217211743-094c3217-114e-4d74-b356-93ff0133078e.gif)  
+3  
+![3removeall](https://user-images.githubusercontent.com/109140000/217211744-cc2505be-1df6-485a-afc1-0078b0aba696.gif)  
+4  
+![4add](https://user-images.githubusercontent.com/109140000/217211750-2283da69-8e9e-45de-a700-d15720555361.gif)  
+5  
+![5delete](https://user-images.githubusercontent.com/109140000/217211755-9200fd2d-1bbf-4839-86e1-ee588ef1fb4d.gif)  
+6  
+![6execution](https://user-images.githubusercontent.com/109140000/217211758-3e4c8342-001e-4373-bd84-80fb857fefc7.gif)  
+7  
+![7chart](https://user-images.githubusercontent.com/109140000/217211763-d8b02893-c106-498d-84df-30bc3528d6ee.gif)  
+
 <br>
 <div align="center"><i>"&nbsp; &nbsp; JavaScript로 구현한 기능들 &nbsp; &nbsp;"</i></div>
 
