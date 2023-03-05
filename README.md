@@ -1,14 +1,4 @@
 # CodingJavaProject4 - Portfolio Builder (22.12.16 ~ 23.01.29)  
-
-<div align="left">
-<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
-<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
-<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
-<img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white">
-<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
-</div>
-<br><br>
-
 1  
 ![1mouseevent](https://user-images.githubusercontent.com/109140000/217211736-b1931e93-0ce1-4289-aa9d-f34443fcbdc3.gif)  
 2  
@@ -30,7 +20,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;선택한 종목과 가중방식에 따라 종목별 보유 비중과 전체 기대수익률을 보여주는 프로그램  
 
 ### Tech Stack  
-&nbsp;&nbsp;&nbsp;&nbsp;HTML5 / CSS3 / Javascript(ES6)  
+&nbsp;&nbsp;&nbsp;&nbsp;JSP / CSS3 / Javascript(ES6)  
 &nbsp;&nbsp;&nbsp;&nbsp;Java (SE 11)  
 &nbsp;&nbsp;&nbsp;&nbsp;MySQL (8.0)  
 &nbsp;&nbsp;&nbsp;&nbsp;(Tool : Eclipse)  
