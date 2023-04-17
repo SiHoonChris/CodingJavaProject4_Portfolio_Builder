@@ -26,8 +26,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;(자세한 계산식은 SQLquery 참고)    
 
 ### Tech Stack  
-&nbsp;&nbsp;&nbsp;&nbsp;JSP / CSS3 / Javascript(ES6)  
+&nbsp;&nbsp;&nbsp;&nbsp;JSP / CSS3 / JavaScript(ES6)  
 &nbsp;&nbsp;&nbsp;&nbsp;Java (SE 11)  
-&nbsp;&nbsp;&nbsp;&nbsp;MySQL (8.0)  
+&nbsp;&nbsp;&nbsp;&nbsp;SQL (MySQL 8.0)  
 &nbsp;&nbsp;&nbsp;&nbsp;(Tool : Eclipse)  
 
