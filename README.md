@@ -23,7 +23,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;SiHoonChris 가중방식은 Ray Dalio의 "All Weather Portfolio(Risk Parity)"에서 영감을 받아 직접 고안한 것이다.  
 &nbsp;&nbsp;&nbsp;&nbsp;포트폴리오 내 종목들의 비중은 해당 종목이 가진 연수익률의 표준편차에 반비례하여 계산된다.  
 &nbsp;&nbsp;&nbsp;&nbsp;연평균 수익률은 (현재 진행 중인) 올해 수익률의 비중을 축소시켜 계산한다.  
-&nbsp;&nbsp;&nbsp;&nbsp;(자세한 계산식은 Query.txt 참고)  
+&nbsp;&nbsp;&nbsp;&nbsp;(자세한 계산식은 SQLquery 참고)    
 
 ### Tech Stack  
 &nbsp;&nbsp;&nbsp;&nbsp;JSP / CSS3 / Javascript(ES6)  
